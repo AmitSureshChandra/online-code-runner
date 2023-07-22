@@ -5,4 +5,4 @@ FROM openjdk:8-jdk
 WORKDIR /opt/myapp
 
 # compile & run
-ENTRYPOINT ["sh", "-c", "javac Solution.java && java Solution"]
+ENTRYPOINT ["sh", "-c", "javac Solution.java && java Solution < input.txt"]

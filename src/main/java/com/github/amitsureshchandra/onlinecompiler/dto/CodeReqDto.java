@@ -3,10 +3,12 @@ package com.github.amitsureshchandra.onlinecompiler.dto;
 public class CodeReqDto {
     private String code;
     private String compiler;
+    private String input;
 
-    public CodeReqDto(String code, String compiler) {
+    public CodeReqDto(String code, String compiler, String input) {
         this.code = code;
         this.compiler = compiler;
+        this.input = input;
     }
 
     public CodeReqDto() {
@@ -26,5 +28,13 @@ public class CodeReqDto {
 
     public void setCompiler(String compiler) {
         this.compiler = compiler;
+    }
+
+    public String getInput() {
+        return input;
+    }
+
+    public void setInput(String input) {
+        this.input = input;
     }
 }

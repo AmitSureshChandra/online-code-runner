@@ -3,10 +3,7 @@ package com.github.amitsureshchandra.onlinecompiler.controller;
 import com.github.amitsureshchandra.onlinecompiler.dto.CodeReqDto;
 import com.github.amitsureshchandra.onlinecompiler.dto.resp.OutputResp;
 import com.github.amitsureshchandra.onlinecompiler.service.RunnerService;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.*;
 
@@ -20,6 +17,7 @@ public class ReqController {
         this.runnerService = runnerService;
     }
 
+    @CrossOrigin(origins = "http://localhost:8080")
     @PostMapping
     OutputResp run(@RequestBody CodeReqDto dto) throws IOException, InterruptedException {
         return runnerService.run(dto);
