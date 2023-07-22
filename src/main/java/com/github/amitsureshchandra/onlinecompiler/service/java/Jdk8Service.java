@@ -1,5 +1,6 @@
 package com.github.amitsureshchandra.onlinecompiler.service.java;
 
+import com.github.amitsureshchandra.onlinecompiler.dto.resp.OutputResp;
 import com.github.amitsureshchandra.onlinecompiler.service.DockerService;
 import com.github.amitsureshchandra.onlinecompiler.service.file.FileService;
 import com.github.amitsureshchandra.onlinecompiler.service.shell.ShellService;
@@ -24,7 +25,7 @@ public class Jdk8Service {
         this.shellService = shellService;
     }
 
-    public String run(String code) throws IOException, InterruptedException {
+    public OutputResp run(String code) throws IOException, InterruptedException {
         String userFolder = fileService.createFile(code);
 
         // creating a container

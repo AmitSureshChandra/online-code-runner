@@ -1,6 +1,7 @@
 package com.github.amitsureshchandra.onlinecompiler.service;
 
 import com.github.amitsureshchandra.onlinecompiler.dto.CodeReqDto;
+import com.github.amitsureshchandra.onlinecompiler.dto.resp.OutputResp;
 import com.github.amitsureshchandra.onlinecompiler.service.java.Jdk8Service;
 import org.springframework.stereotype.Service;
 
@@ -15,11 +16,11 @@ public class RunnerService {
         this.jdk8Service = jdk8Service;
     }
 
-    public String run(CodeReqDto dto) throws IOException, InterruptedException {
+    public OutputResp run(CodeReqDto dto) throws IOException, InterruptedException {
         switch (dto.getCompiler()) {
             case "jdk8":
                 return jdk8Service.run(dto.getCode());
         }
-        return "Compiler Not Found";
+        return new OutputResp(null, "compiler not found", -1);
     }
 }

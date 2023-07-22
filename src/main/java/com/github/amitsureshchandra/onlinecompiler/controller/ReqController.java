@@ -1,6 +1,7 @@
 package com.github.amitsureshchandra.onlinecompiler.controller;
 
 import com.github.amitsureshchandra.onlinecompiler.dto.CodeReqDto;
+import com.github.amitsureshchandra.onlinecompiler.dto.resp.OutputResp;
 import com.github.amitsureshchandra.onlinecompiler.service.RunnerService;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -20,7 +21,7 @@ public class ReqController {
     }
 
     @PostMapping
-    String run(@RequestBody CodeReqDto dto) throws IOException, InterruptedException {
+    OutputResp run(@RequestBody CodeReqDto dto) throws IOException, InterruptedException {
         return runnerService.run(dto);
     }
 }
