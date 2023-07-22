@@ -1,7 +1,8 @@
-package com.github.amitsureshchandra.onlinecompiler.service;
+package com.github.amitsureshchandra.onlinecompiler.service.core;
 
 import com.github.amitsureshchandra.onlinecompiler.dto.CodeReqDto;
 import com.github.amitsureshchandra.onlinecompiler.dto.resp.OutputResp;
+import com.github.amitsureshchandra.onlinecompiler.service.lang.GoLangService;
 import com.github.amitsureshchandra.onlinecompiler.service.lang.JavaLangService;
 import org.springframework.stereotype.Service;
 
@@ -11,9 +12,11 @@ import java.io.IOException;
 public class RunnerService {
 
     final JavaLangService javaLangService;
+    final GoLangService goLangService;
 
-    public RunnerService(JavaLangService javaLangService) {
+    public RunnerService(JavaLangService javaLangService, GoLangService goLangService) {
         this.javaLangService = javaLangService;
+        this.goLangService = goLangService;
     }
 
     public OutputResp run(CodeReqDto dto) throws IOException, InterruptedException {
@@ -22,7 +25,7 @@ public class RunnerService {
             case "jdk20":
                 return javaLangService.run(dto);
             case "golang12":
-                return javaLangService.run(dto);
+                return goLangService.run(dto);
         }
         return new OutputResp(null, "compiler not found", -1);
     }
