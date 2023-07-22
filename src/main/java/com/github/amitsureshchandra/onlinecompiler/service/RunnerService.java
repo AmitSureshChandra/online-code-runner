@@ -19,7 +19,7 @@ public class RunnerService {
     public OutputResp run(CodeReqDto dto) throws IOException, InterruptedException {
         switch (dto.getCompiler()) {
             case "jdk8":
-                return jdk8Service.run(dto.getCode());
+                return jdk8Service.run(dto);
         }
         return new OutputResp(null, "compiler not found", -1);
     }

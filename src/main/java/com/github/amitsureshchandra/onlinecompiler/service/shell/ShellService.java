@@ -26,21 +26,16 @@ public class ShellService {
             output.append(line);
         }
 
+        first = true;
         // Read the error output from the process
         BufferedReader errorReader = new BufferedReader(new InputStreamReader(process.getErrorStream()));
         while ((line = errorReader.readLine()) != null) {
-            System.err.println("Error: " + line);
-            error.append(line).append("\n");
+            if(!first) error.append("\n"); else first = false;
+            error.append(line);
         }
 
         // Wait for the process to complete
         int exitCode = process.waitFor();
-
-        System.out.println("Output : ");
-        System.out.println(output);
-
-        System.out.println("exitCode : "+ exitCode);
-
         return new OutputResp(output.toString(), error.toString(), exitCode);
     }
 }
