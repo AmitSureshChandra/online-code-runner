@@ -4,8 +4,5 @@ FROM openjdk:8-jdk
 # Set the working directory inside the container
 WORKDIR /opt/myapp
 
-# compile
-CMD ["javac", "Solution.java"]
-
-# run
-CMD ["java", "Solution"]
+# compile & run
+ENTRYPOINT ["sh", "-c", "javac Solution.java && java Solution && ls -l"]

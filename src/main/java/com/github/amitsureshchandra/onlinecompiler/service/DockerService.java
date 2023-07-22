@@ -5,6 +5,6 @@ import org.springframework.stereotype.Service;
 @Service
 public class DockerService {
     public String getDockerCommand(String userFolder) {
-        return "docker run --memory 100mb --cpu-quota=100000 -v "+ System.getProperty("user.dir") +"/"+ userFolder +":/opt/myapp my-java-app8";
+        return "docker run --memory 100mb --cpu-quota=100000 -v "+ System.getProperty("user.dir") +"/"+ userFolder +":/opt/myapp my-jdk-8-2";
     }
 }
