@@ -16,10 +16,18 @@ public class FileService {
         String userFolder = "temp/" + UUID.randomUUID().toString().substring(0, 6);
         File folder = new File(userFolder);
         if(!folder.exists()) folder.mkdir();
+
         String filePath = System.getProperty("user.dir") + "/" + userFolder + "/Solution.java";
-        FileWriter fileWriter = new FileWriter(filePath);
-        BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
-        bufferedWriter.write(code);
+
+        try (FileWriter fileWriter = new FileWriter(filePath);
+             BufferedWriter bufferedWriter = new BufferedWriter(fileWriter)) {
+            bufferedWriter.write(code);
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.err.println("Error writing to the file: " + e.getMessage());
+            throw new RuntimeException("Server Error");
+        }
+
         return userFolder;
     }
 }
