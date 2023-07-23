@@ -1,41 +1,41 @@
-package com.github.amitsureshchandra.onlinecompiler.service.java;
+package com.github.amitsureshchandra.onlinecompiler.service.lang;
 
 import com.github.amitsureshchandra.onlinecompiler.dto.CodeReqDto;
 import com.github.amitsureshchandra.onlinecompiler.dto.resp.OutputResp;
 import com.github.amitsureshchandra.onlinecompiler.service.docker.DockerService;
-import com.github.amitsureshchandra.onlinecompiler.service.IContainerRunnerService;
 import com.github.amitsureshchandra.onlinecompiler.service.file.FileService;
 import com.github.amitsureshchandra.onlinecompiler.service.shell.ShellService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.github.amitsureshchandra.onlinecompiler.service.util.FileUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.io.*;
+import java.io.IOException;
 import java.util.UUID;
 
 @Service
-public class Jdk8Service implements IContainerRunnerService {
-
-    Logger logger = LoggerFactory.getLogger(Jdk8Service.class);
+@Slf4j
+public abstract class CommonLangService implements IContainerRunnerService {
 
     final DockerService dockerService;
     final FileService fileService;
     final ShellService shellService;
+    final FileUtil fileUtil;
 
-    public Jdk8Service(DockerService dockerService, FileService fileService, ShellService shellService) {
+    public CommonLangService(DockerService dockerService, FileService fileService, ShellService shellService, FileUtil fileUtil) {
         this.dockerService = dockerService;
         this.fileService = fileService;
         this.shellService = shellService;
+        this.fileUtil = fileUtil;
     }
 
     @Override
     public OutputResp run(CodeReqDto dto) throws IOException, InterruptedException {
-        String userFolder = fileService.createFile(dto.getCode(), dto.getInput());
+        String userFolder = setUpFiles(dto);
 
         // creating a container
         String containerName = UUID.randomUUID().toString();
         String command = dockerService.getDockerCommand(userFolder, dto.getCompiler(), containerName);
-        logger.info("command : " + command);
+        log.info("command : " + command);
 
         // running shell service & returning output
         OutputResp outputResp = shellService.run(command);
@@ -43,9 +43,24 @@ public class Jdk8Service implements IContainerRunnerService {
         // clearing docker image
         shellService.run("docker rm " + containerName);
 
-        // clearing folder
-        fileService.deleteFolder(userFolder);
+        cleanUp(userFolder);
 
         return outputResp;
+    }
+
+    @Override
+    public void cleanUp(String folder) {
+        // clearing folder
+        fileUtil.deleteFolder(folder);
+    }
+
+    @Override
+    public String createTempFolder(CodeReqDto dto) {
+        String userFolder = "temp/" + UUID.randomUUID().toString().substring(0, 6);
+        if(!fileUtil.createFolder(userFolder)) {
+            log.error("failed to create folder");
+            throw new RuntimeException("Server Error");
+        }
+        return userFolder;
     }
 }
