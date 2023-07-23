@@ -35,6 +35,14 @@ public class GoLangService extends CommonLangService {
             log.error("failed to write to file for code");
             throw new RuntimeException("Server Error");
         }
+
+        String inputFilePath = System.getProperty("user.dir") + "/" + userFolder + "/input.txt";
+
+        if(!fileUtil.createFile(inputFilePath, dto.getInput())) {
+            log.error("failed to write to file for code");
+            throw new RuntimeException("Server Error");
+        }
+
         return userFolder;
     }
 }
