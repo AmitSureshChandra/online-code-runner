@@ -6,6 +6,7 @@ import com.github.amitsureshchandra.onlinecompiler.service.core.RunnerService;
 import com.github.amitsureshchandra.onlinecompiler.service.docker.DockerService;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.io.*;
 import java.util.Map;
 
@@ -21,13 +22,11 @@ public class ReqController {
         this.dockerService = dockerService;
     }
 
-    @CrossOrigin(origins = "http://localhost:8080")
     @PostMapping
-    OutputResp run(@RequestBody CodeReqDto dto) throws IOException, InterruptedException {
+    OutputResp run(@RequestBody @Valid CodeReqDto dto) {
         return runnerService.run(dto);
     }
 
-    @CrossOrigin(origins = "http://localhost:8080")
     @GetMapping("/compilers")
     Map<String, String> supportedCompilers() {
         return dockerService.supported();
