@@ -22,8 +22,14 @@ public class RunnerService {
         this.goLangService = goLangService;
     }
 
-    public OutputResp run(CodeReqDto dto) throws IOException, InterruptedException {
-        OutputResp outputResp = runPrivate(dto);
+    public OutputResp run(CodeReqDto dto) {
+        OutputResp outputResp = null;
+        try {
+            outputResp = runPrivate(dto);
+        } catch (IOException | InterruptedException e) {
+            log.error(e.getMessage());
+            throw new RuntimeException(e);
+        }
         if(outputResp.getExitCode() == 0) return outputResp;
         log.error(outputResp.toString());
         throw new RuntimeException("Server Error");
