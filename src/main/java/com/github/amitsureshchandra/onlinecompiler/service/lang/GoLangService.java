@@ -1,6 +1,7 @@
 package com.github.amitsureshchandra.onlinecompiler.service.lang;
 
 import com.github.amitsureshchandra.onlinecompiler.dto.CodeReqDto;
+import com.github.amitsureshchandra.onlinecompiler.exception.ServerException;
 import com.github.amitsureshchandra.onlinecompiler.service.docker.DockerService;
 import com.github.amitsureshchandra.onlinecompiler.service.file.FileService;
 import com.github.amitsureshchandra.onlinecompiler.service.shell.ShellService;
@@ -28,19 +29,21 @@ public class GoLangService extends CommonLangService {
 
     @Override
     public String setUpFiles(CodeReqDto dto) {
+
         String userFolder = createTempFolder(dto);
+
         String filePath = System.getProperty("user.dir") + "/" + userFolder + "/main.go";
 
         if(!fileUtil.createFile(filePath, dto.getCode())) {
             log.error("failed to write to file for code");
-            throw new RuntimeException("Server Error");
+            throw new ServerException("Server Error");
         }
 
         String inputFilePath = System.getProperty("user.dir") + "/" + userFolder + "/input.txt";
 
         if(!fileUtil.createFile(inputFilePath, dto.getInput())) {
             log.error("failed to write to file for code");
-            throw new RuntimeException("Server Error");
+            throw new ServerException("Server Error");
         }
 
         return userFolder;

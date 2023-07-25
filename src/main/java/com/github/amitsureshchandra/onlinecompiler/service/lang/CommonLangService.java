@@ -2,6 +2,7 @@ package com.github.amitsureshchandra.onlinecompiler.service.lang;
 
 import com.github.amitsureshchandra.onlinecompiler.dto.CodeReqDto;
 import com.github.amitsureshchandra.onlinecompiler.dto.resp.OutputResp;
+import com.github.amitsureshchandra.onlinecompiler.exception.ServerException;
 import com.github.amitsureshchandra.onlinecompiler.service.docker.DockerService;
 import com.github.amitsureshchandra.onlinecompiler.service.file.FileService;
 import com.github.amitsureshchandra.onlinecompiler.service.shell.ShellService;
@@ -59,7 +60,7 @@ public abstract class CommonLangService implements IContainerRunnerService {
         String userFolder = "temp/" + UUID.randomUUID().toString().substring(0, 6);
         if(!fileUtil.createFolder(userFolder)) {
             log.error("failed to create folder");
-            throw new RuntimeException("Server Error");
+            throw new ServerException("Server Error");
         }
         return userFolder;
     }
