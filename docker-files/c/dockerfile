@@ -1,0 +1,5 @@
+FROM gcc:11
+
+WORKDIR /usr/src/app
+
+ENTRYPOINT ["sh", "-c", "gcc -o app main.c < input.txt"]

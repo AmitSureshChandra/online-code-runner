@@ -29,6 +29,12 @@ public class DockerService {
         containerMap.put("python3", "online-compiler-python3");
         containerMapInfo.put("python3", "Python 3");
 
+        containerMap.put("javascript", "online-compiler-javascript");
+        containerMapInfo.put("javascript", "Javascript");
+
+        containerMap.put("c/c++", "online-compiler-c");
+        containerMapInfo.put("c/c++", "C/C++");
+
     }
 
     public Map<String, String> supported() {
@@ -44,6 +50,10 @@ public class DockerService {
                 return "docker run --name "+ containerName +" --memory 150mb --cpu-quota=100000 -v "+ System.getProperty("user.dir") +"/"+ userFolder +":/usr/src/app " + containerMap.get(compiler);
             case "python3":
                 return "docker run --name "+ containerName +" --memory 100mb --cpu-quota=100000 -v "+ System.getProperty("user.dir") +"/"+ userFolder +":/usr/src/app " + containerMap.get(compiler);
+            case "javascript":
+                return "docker run --name "+ containerName +" --memory 200mb --cpu-quota=100000 -v "+ System.getProperty("user.dir") +"/"+ userFolder +":/usr/src/app " + containerMap.get(compiler);
+            case "c/c++":
+                return "docker run --name "+ containerName +" --memory 250mb --cpu-quota=100000 -v "+ System.getProperty("user.dir") +"/"+ userFolder +":/usr/src/app " + containerMap.get(compiler);
         }
         log.error("command not found for compiler " + compiler);
         throw new ServerException("Server Error");
