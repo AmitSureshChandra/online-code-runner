@@ -2,6 +2,8 @@ package com.github.amitsureshchandra.onlinecompiler.service.lang;
 
 import com.github.amitsureshchandra.onlinecompiler.dto.CodeReqDto;
 import com.github.amitsureshchandra.onlinecompiler.dto.resp.OutputResp;
+import com.github.amitsureshchandra.onlinecompiler.exception.ServerException;
+import com.github.amitsureshchandra.onlinecompiler.exception.ValidationException;
 import com.github.amitsureshchandra.onlinecompiler.service.docker.DockerService;
 import com.github.amitsureshchandra.onlinecompiler.service.file.FileService;
 import com.github.amitsureshchandra.onlinecompiler.service.shell.ShellService;
@@ -15,7 +17,7 @@ import java.util.UUID;
 
 @Service
 @Slf4j
-public abstract class CommonLangService implements IContainerRunnerService {
+public class CommonLangService implements IContainerRunnerService {
 
     final DockerService dockerService;
     final FileService fileService;
@@ -77,5 +79,42 @@ public abstract class CommonLangService implements IContainerRunnerService {
             throw new RuntimeException("Server Error");
         }
         return userFolder;
+    }
+
+    @Override
+    public String setUpFiles(CodeReqDto dto) {
+        String userFolder = createTempFolder(dto);
+        String filePath = System.getProperty("user.dir") + "/" + userFolder + "/" + getFileName(dto.getCompiler());
+
+        if(!fileUtil.createFile(filePath, dto.getCode())) {
+            log.error("failed to write to file for code");
+            throw new ServerException("Server Error");
+        }
+
+        String inputFilePath = System.getProperty("user.dir") + "/" + userFolder + "/input.txt";
+
+        if(!fileUtil.createFile(inputFilePath, dto.getInput() == null ? "" : dto.getInput())) {
+            log.error("failed to write to file for input");
+            throw new ServerException("Server Error");
+        }
+        return userFolder;
+    }
+
+    private String getFileName(String compiler) {
+        switch (compiler) {
+            case "jdk8":
+            case "jdk20":
+                return "Solution.java";
+            case "gcc11":
+                return "main.cpp";
+            case "node20":
+                return "app.js";
+            case "golang12":
+                return "main.go";
+            case "python3":
+                return "solution.py";
+            default:
+                throw new ValidationException("compiler not found");
+        }
     }
 }

@@ -19,9 +19,15 @@
 
 build docker image using following command by going in `./docker-files/` folders
 ```shell
-docker build -t online-compiler-jdk8 .
-docker build -t online-compiler-jdk20 .
-docker build -t online-compiler-golang12 .
+cd docker-files/jdk8 && docker build -t online-compiler-jdk8 .
+cd docker-files/jdk20 && docker build -t online-compiler-jdk20 .
+cd docker-files/golang12 && docker build -t online-compiler-golang12 .
+cd docker-files/python3 && docker build -t online-compiler-python3 .
+cd docker-files/node20 && docker build -t online-compiler-node20 .
+cd docker-files/gcc11 && docker build -t online-compiler-gcc11 .
 ```
 
 create a folder name `temp` to store user temporary code files
+```shell
+mkdir temp
+```
