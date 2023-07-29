@@ -22,7 +22,7 @@ public class ValidationAdvice {
     }
 
     @ExceptionHandler(ServerException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ResponseMessageDto serverException(ServerException ex){
         return new ResponseMessageDto(ex.getMessage(), HttpStatus.BAD_REQUEST.value());
     }

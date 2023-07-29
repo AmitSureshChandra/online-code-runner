@@ -29,12 +29,11 @@ public class DockerService {
         containerMap.put("python3", "online-compiler-python3");
         containerMapInfo.put("python3", "Python 3");
 
-        containerMap.put("javascript", "online-compiler-javascript");
-        containerMapInfo.put("javascript", "Javascript");
+        containerMap.put("node20", "online-compiler-node20");
+        containerMapInfo.put("node20", "Node 20");
 
-        containerMap.put("c/c++", "online-compiler-c");
-        containerMapInfo.put("c/c++", "C/C++");
-
+        containerMap.put("gcc11", "online-compiler-gcc11");
+        containerMapInfo.put("gcc11", "C/C++(gcc11)");
     }
 
     public Map<String, String> supported() {
@@ -50,9 +49,9 @@ public class DockerService {
                 return "docker run --name "+ containerName +" --memory 150mb --cpu-quota=100000 -v "+ System.getProperty("user.dir") +"/"+ userFolder +":/usr/src/app " + containerMap.get(compiler);
             case "python3":
                 return "docker run --name "+ containerName +" --memory 100mb --cpu-quota=100000 -v "+ System.getProperty("user.dir") +"/"+ userFolder +":/usr/src/app " + containerMap.get(compiler);
-            case "javascript":
+            case "node20":
                 return "docker run --name "+ containerName +" --memory 200mb --cpu-quota=100000 -v "+ System.getProperty("user.dir") +"/"+ userFolder +":/usr/src/app " + containerMap.get(compiler);
-            case "c/c++":
+            case "gcc11":
                 return "docker run --name "+ containerName +" --memory 250mb --cpu-quota=100000 -v "+ System.getProperty("user.dir") +"/"+ userFolder +":/usr/src/app " + containerMap.get(compiler);
         }
         log.error("command not found for compiler " + compiler);
