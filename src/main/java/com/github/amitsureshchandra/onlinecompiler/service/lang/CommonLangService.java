@@ -10,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Service
@@ -37,9 +38,23 @@ public abstract class CommonLangService implements IContainerRunnerService {
         String command = dockerService.getDockerCommand(userFolder, dto.getCompiler(), containerName);
         log.info("command : " + command);
 
-        // running shell service & returning output
-        OutputResp outputResp = shellService.run(command);
+        // running shell service &
+        shellService.run(command);
 
+        LocalDateTime startTime = LocalDateTime.now();
+        System.out.println("start time : " + startTime);
+        int waitTime = 10; // 10ms
+        Thread.sleep(waitTime);
+
+        // stopping container
+        shellService.run("docker stop " + containerName);
+
+        System.out.println("After docker stop "+ LocalDateTime.now());
+        // returning output
+        OutputResp outputResp = shellService.run("docker logs " + containerName);
+
+        System.out.println("After docker log "+ LocalDateTime.now());
+        System.out.println(outputResp.getOutput().length());
         // clearing docker image
         shellService.run("docker rm " + containerName);
 

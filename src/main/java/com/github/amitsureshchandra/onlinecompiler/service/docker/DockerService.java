@@ -35,9 +35,9 @@ public class DockerService {
         switch (compiler) {
             case "jdk8":
             case "jdk20":
-                return "docker run --name "+ containerName +" --memory 100mb --cpu-quota=100000 -v "+ System.getProperty("user.dir") +"/"+ userFolder +":/opt/myapp " + containerMap.get(compiler);
+                return "docker run --name "+ containerName +" -d --memory 100mb --cpu-quota=100000 -v "+ System.getProperty("user.dir") +"/"+ userFolder +":/opt/myapp " + containerMap.get(compiler);
             case "golang12":
-                return "docker run --name "+ containerName +" --memory 150mb --cpu-quota=100000 -v "+ System.getProperty("user.dir") +"/"+ userFolder +":/usr/src/app " + containerMap.get(compiler);
+                return "docker run --name "+ containerName +" -d --memory 150mb --cpu-quota=100000 -v "+ System.getProperty("user.dir") +"/"+ userFolder +":/usr/src/app " + containerMap.get(compiler);
         }
         log.error("command not found for compiler " + compiler);
         throw new RuntimeException("Server Error");
