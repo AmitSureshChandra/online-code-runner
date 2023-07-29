@@ -56,6 +56,6 @@ public class DockerService {
                 return "docker run --name "+ containerName +" --memory 250mb --cpu-quota=100000 -v "+ System.getProperty("user.dir") +"/"+ userFolder +":/usr/src/app " + containerMap.get(compiler);
         }
         log.error("command not found for compiler " + compiler);
-        throw new ServerException("Server Error");
+        throw new RuntimeException("Server Error");
     }
 }

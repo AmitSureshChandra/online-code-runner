@@ -9,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.util.Arrays;
 
 @Service
 @Slf4j
@@ -37,7 +38,7 @@ public class RunnerService {
             log.error(e.getMessage());
             throw new RuntimeException(e);
         }
-        if(outputResp.getExitCode() == 0) return outputResp;
+        if(Arrays.asList(0,1).contains(outputResp.getExitCode())) return outputResp;
         log.error(outputResp.toString());
         throw new ServerException("Server Error");
     }

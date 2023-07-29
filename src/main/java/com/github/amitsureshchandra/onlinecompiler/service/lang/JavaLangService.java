@@ -1,7 +1,6 @@
 package com.github.amitsureshchandra.onlinecompiler.service.lang;
 
 import com.github.amitsureshchandra.onlinecompiler.dto.CodeReqDto;
-import com.github.amitsureshchandra.onlinecompiler.exception.ServerException;
 import com.github.amitsureshchandra.onlinecompiler.service.docker.DockerService;
 import com.github.amitsureshchandra.onlinecompiler.service.file.FileService;
 import com.github.amitsureshchandra.onlinecompiler.service.shell.ShellService;
@@ -35,12 +34,12 @@ public class JavaLangService extends CommonLangService {
 
         if(!fileUtil.createFile(filePath, dto.getCode())) {
             log.error("failed to write to file for code");
-            throw new ServerException("Server Error");
+            throw new RuntimeException("Server Error");
         }
 
         if(!fileUtil.createFile(inputFilePath, dto.getInput() == null ? "" : dto.getInput())) {
             log.error("failed to write to file for input");
-            throw new ServerException("Server Error");
+            throw new RuntimeException("Server Error");
         }
         return userFolder;
     }
