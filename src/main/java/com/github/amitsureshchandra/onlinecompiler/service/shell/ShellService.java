@@ -22,6 +22,10 @@ public class ShellService {
         String line;
         boolean first = true;
         while ((line = reader.readLine()) != null) {
+            // check if output response goes over 1000 lines skip before lines
+
+            if(!line.isEmpty() && output.length() > 1000) output.delete(0, output.length());
+
             if(!first) output.append("\n"); else first = false;
             output.append(line);
         }
