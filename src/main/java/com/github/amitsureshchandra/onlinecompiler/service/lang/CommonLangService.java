@@ -43,7 +43,7 @@ public abstract class CommonLangService implements IContainerRunnerService {
 
         LocalDateTime startTime = LocalDateTime.now();
         System.out.println("start time : " + startTime);
-        int waitTime = 10; // 1 sec
+        int waitTime = 10; // 10ms
         Thread.sleep(waitTime);
 
         // stopping container
