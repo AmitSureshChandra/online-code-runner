@@ -1,5 +1,5 @@
 FROM gcc:11
 
-WORKDIR /usr/src/app
+WORKDIR /opt/myapp
 
 ENTRYPOINT ["sh", "-c", "gcc -o app main.cpp && ./app < input.txt"]
