@@ -12,10 +12,10 @@ public class ShellService {
 
     public OutputResp run(String command) throws IOException, InterruptedException {
         // Start the process
-        Process process = Runtime.getRuntime().exec(command);
+        var process = Runtime.getRuntime().exec(command);
 
-        StringBuilder output = new StringBuilder();
-        StringBuilder error = new StringBuilder();
+        var output = new StringBuilder();
+        var error = new StringBuilder();
 
         // Read the output from the process
         BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));

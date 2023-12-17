@@ -11,12 +11,12 @@ public class ContainerCacheService {
     Map<String, String> cachedContainerMap = new HashMap<>();
 
     public String addContainer(String value) {
-        String key = getKey(value);
+        var key = getKey();
         cachedContainerMap.put(key, value);
         return key;
     }
 
-    private String getKey(String value) {
+    private String getKey() {
         return UUID.randomUUID().toString();
     }
 }

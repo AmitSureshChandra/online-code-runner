@@ -1,13 +1,11 @@
 package com.github.amitsureshchandra.onlinecompiler.service.docker;
 
-import com.github.amitsureshchandra.onlinecompiler.exception.ServerException;
+import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.PostConstruct;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
 @Service
 @Slf4j
@@ -42,17 +40,21 @@ public class DockerService {
 
     public String getDockerCommand(String userFolder, String compiler, String containerName) {
         switch (compiler) {
-            case "jdk8":
-            case "jdk20":
-                return "docker run --name "+ containerName +" --memory 100mb --cpu-quota=100000 -v "+ System.getProperty("user.dir") +"/"+ userFolder +":/opt/myapp " + containerMap.get(compiler);
-            case "golang12":
-                return "docker run --name "+ containerName +" --memory 150mb --cpu-quota=100000 -v "+ System.getProperty("user.dir") +"/"+ userFolder +":/usr/src/app " + containerMap.get(compiler);
-            case "python3":
-                return "docker run --name "+ containerName +" --memory 100mb --cpu-quota=100000 -v "+ System.getProperty("user.dir") +"/"+ userFolder +":/usr/src/app " + containerMap.get(compiler);
-            case "node20":
-                return "docker run --name "+ containerName +" --memory 200mb --cpu-quota=100000 -v "+ System.getProperty("user.dir") +"/"+ userFolder +":/usr/src/app " + containerMap.get(compiler);
-            case "gcc11":
-                return "docker run --name "+ containerName +" --memory 250mb --cpu-quota=100000 -v "+ System.getProperty("user.dir") +"/"+ userFolder +":/usr/src/app " + containerMap.get(compiler);
+            case "jdk8", "jdk20" -> {
+                return "docker run --name " + containerName + " --memory 100mb --cpu-quota=100000 -v " + System.getProperty("user.dir") + "/" + userFolder + ":/opt/myapp " + containerMap.get(compiler);
+            }
+            case "golang12" -> {
+                return "docker run --name " + containerName + " --memory 150mb --cpu-quota=100000 -v " + System.getProperty("user.dir") + "/" + userFolder + ":/usr/src/app " + containerMap.get(compiler);
+            }
+            case "python3" -> {
+                return "docker run --name " + containerName + " --memory 100mb --cpu-quota=100000 -v " + System.getProperty("user.dir") + "/" + userFolder + ":/usr/src/app " + containerMap.get(compiler);
+            }
+            case "node20" -> {
+                return "docker run --name " + containerName + " --memory 200mb --cpu-quota=100000 -v " + System.getProperty("user.dir") + "/" + userFolder + ":/usr/src/app " + containerMap.get(compiler);
+            }
+            case "gcc11" -> {
+                return "docker run --name " + containerName + " --memory 250mb --cpu-quota=100000 -v " + System.getProperty("user.dir") + "/" + userFolder + ":/usr/src/app " + containerMap.get(compiler);
+            }
         }
         log.error("command not found for compiler " + compiler);
         throw new RuntimeException("Server Error");
