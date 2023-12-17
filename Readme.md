@@ -31,3 +31,6 @@ create a folder name `temp` to store user temporary code files
 ```shell
 mkdir temp
 ```
+
+# to see api docs 
+![image](https://github.com/AmitSureshChandra/online-compiler/assets/47358181/2a995616-fd56-4228-93b3-62026f609b19)
