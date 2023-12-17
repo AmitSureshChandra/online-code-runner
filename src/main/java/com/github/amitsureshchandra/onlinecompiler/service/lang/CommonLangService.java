@@ -37,7 +37,7 @@ public class CommonLangService implements IContainerRunnerService {
 
         // creating a container
         String containerName = UUID.randomUUID().toString();
-        String command = dockerService.getDockerCommand(userFolder, dto.getCompiler(), containerName);
+        String command = dockerService.getDockerCommand(userFolder, dto.compiler(), containerName);
         log.info("command : " + command);
 
         // running shell service &
@@ -56,7 +56,7 @@ public class CommonLangService implements IContainerRunnerService {
         OutputResp outputResp = shellService.run("docker logs " + containerName);
 
         System.out.println("After docker log "+ LocalDateTime.now());
-        System.out.println(outputResp.getOutput().length());
+        System.out.println(outputResp.output().length());
         // clearing docker image
         shellService.run("docker rm " + containerName);
 
@@ -84,16 +84,16 @@ public class CommonLangService implements IContainerRunnerService {
     @Override
     public String setUpFiles(CodeReqDto dto) {
         String userFolder = createTempFolder(dto);
-        String filePath = System.getProperty("user.dir") + "/" + userFolder + "/" + getFileName(dto.getCompiler());
+        String filePath = System.getProperty("user.dir") + "/" + userFolder + "/" + getFileName(dto.compiler());
 
-        if(!fileUtil.createFile(filePath, dto.getCode())) {
+        if(!fileUtil.createFile(filePath, dto.code())) {
             log.error("failed to write to file for code");
             throw new ServerException("Server Error");
         }
 
         String inputFilePath = System.getProperty("user.dir") + "/" + userFolder + "/input.txt";
 
-        if(!fileUtil.createFile(inputFilePath, dto.getInput() == null ? "" : dto.getInput())) {
+        if(!fileUtil.createFile(inputFilePath, dto.input() == null ? "" : dto.input())) {
             log.error("failed to write to file for input");
             throw new ServerException("Server Error");
         }

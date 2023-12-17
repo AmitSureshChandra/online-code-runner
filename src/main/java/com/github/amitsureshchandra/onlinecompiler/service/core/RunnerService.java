@@ -13,7 +13,6 @@ import java.util.Arrays;
 @Service
 @Slf4j
 public class RunnerService {
-
     private final CommonLangService commonLangService;
 
     public RunnerService(CommonLangService commonLangService) {
@@ -21,16 +20,15 @@ public class RunnerService {
     }
 
     public OutputResp run(CodeReqDto dto) {
-        OutputResp outputResp = null;
         try {
-            outputResp = runPrivate(dto);
+            var outputResp = runPrivate(dto);
+            if(outputResp.exitCode() == 0) return outputResp;
+            log.error(outputResp.toString());
+            throw new ServerException("Server Error");
         } catch (IOException | InterruptedException e) {
             log.error(e.getMessage());
             throw new ServerException("Server Error");
         }
-        if(outputResp.getExitCode() == 0) return outputResp;
-        log.error(outputResp.toString());
-        throw new ServerException("Server Error");
     }
 
     private OutputResp runPrivate(CodeReqDto dto) throws IOException, InterruptedException {

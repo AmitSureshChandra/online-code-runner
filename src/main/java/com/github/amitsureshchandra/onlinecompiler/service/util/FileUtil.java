@@ -14,8 +14,8 @@ import java.nio.file.Paths;
 public class FileUtil {
 
     public boolean createFile(String filePath, String content) {
-        try (FileWriter fileWriter = new FileWriter(filePath);
-             BufferedWriter bufferedWriter = new BufferedWriter(fileWriter)) {
+        try (var fileWriter = new FileWriter(filePath);
+             var bufferedWriter = new BufferedWriter(fileWriter)) {
             bufferedWriter.write(content);
             return true;
         } catch (IOException e) {
@@ -26,14 +26,14 @@ public class FileUtil {
     }
 
     public boolean createFolder(String userFolder) {
-        File folder = new File(userFolder);
+        var folder = new File(userFolder);
         if(!folder.exists()) return folder.mkdir();
         return true;
     }
 
     public boolean deleteFolder(String folderPath) {
         try {
-            Path folder = Paths.get(folderPath);
+            var folder = Paths.get(folderPath);
             Files.walk(folder)
                     .sorted((p1, p2) -> p2.toString().length() - p1.toString().length()) // Sort in descending order of path length
                     .map(Path::toFile)

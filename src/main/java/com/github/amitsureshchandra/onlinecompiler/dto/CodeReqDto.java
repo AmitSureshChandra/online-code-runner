@@ -1,22 +1,8 @@
 package com.github.amitsureshchandra.onlinecompiler.dto;
 
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
+public record CodeReqDto(@NotNull @NotBlank String code,@NotNull @NotBlank String compiler, String input) {
 
-@Data
-@NoArgsConstructor
-public class CodeReqDto {
-
-    @NotNull
-    @NotBlank
-    private String code;
-
-    @NotNull
-    @NotBlank
-    private String compiler;
-
-    private String input;
 }

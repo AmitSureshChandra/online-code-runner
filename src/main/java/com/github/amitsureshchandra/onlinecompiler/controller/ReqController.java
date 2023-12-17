@@ -4,10 +4,9 @@ import com.github.amitsureshchandra.onlinecompiler.dto.CodeReqDto;
 import com.github.amitsureshchandra.onlinecompiler.dto.resp.OutputResp;
 import com.github.amitsureshchandra.onlinecompiler.service.core.RunnerService;
 import com.github.amitsureshchandra.onlinecompiler.service.docker.DockerService;
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
-import java.io.*;
 import java.util.Map;
 
 @RestController
