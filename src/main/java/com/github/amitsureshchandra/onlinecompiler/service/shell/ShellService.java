@@ -40,6 +40,6 @@ public class ShellService {
 
         // Wait for the process to complete
         int exitCode = process.waitFor();
-        return new OutputResp(output.toString(), error.toString(), exitCode);
+        return new OutputResp(output.isEmpty() ? "" : output.toString(), error.toString(), exitCode);
     }
 }

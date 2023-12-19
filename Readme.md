@@ -34,3 +34,9 @@ mkdir temp
 
 # to see api docs 
 ![image](https://github.com/AmitSureshChandra/online-compiler/assets/47358181/2a995616-fd56-4228-93b3-62026f609b19)
+
+# added `run.sh` to execute above scripts directly
+```shell
+chmod +x run.sh
+./run.sh
+```
