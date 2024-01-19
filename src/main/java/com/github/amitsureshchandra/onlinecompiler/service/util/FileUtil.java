@@ -10,10 +10,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-@Service
 public class FileUtil {
 
-    public boolean createFile(String filePath, String content) {
+    public static boolean createFile(String filePath, String content) {
         try (var fileWriter = new FileWriter(filePath);
              var bufferedWriter = new BufferedWriter(fileWriter)) {
             bufferedWriter.write(content);
@@ -25,13 +24,13 @@ public class FileUtil {
         }
     }
 
-    public boolean createFolder(String userFolder) {
+    public static boolean createFolder(String userFolder) {
         var folder = new File(userFolder);
         if(!folder.exists()) return folder.mkdir();
         return true;
     }
 
-    public boolean deleteFolder(String folderPath) {
+    public static boolean deleteFolder(String folderPath) {
         try {
             var folder = Paths.get(folderPath);
             Files.walk(folder)

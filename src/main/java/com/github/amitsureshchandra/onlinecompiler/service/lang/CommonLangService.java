@@ -11,6 +11,7 @@ import com.github.amitsureshchandra.onlinecompiler.service.util.FileUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.io.File;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -18,17 +19,14 @@ import java.util.UUID;
 @Service
 @Slf4j
 public class CommonLangService implements IContainerRunnerService {
-
     final DockerService dockerService;
     final FileService fileService;
     final ShellService shellService;
-    final FileUtil fileUtil;
 
-    public CommonLangService(DockerService dockerService, FileService fileService, ShellService shellService, FileUtil fileUtil) {
+    public CommonLangService(DockerService dockerService, FileService fileService, ShellService shellService) {
         this.dockerService = dockerService;
         this.fileService = fileService;
         this.shellService = shellService;
-        this.fileUtil = fileUtil;
     }
 
     @Override
@@ -37,7 +35,7 @@ public class CommonLangService implements IContainerRunnerService {
 
         // creating a container
         String containerName = UUID.randomUUID().toString();
-        String command = dockerService.getDockerCommand(userFolder, dto.compiler(), containerName);
+        String command = dockerService.getDockerCommand(userFolder, dto.getCompiler(), containerName);
         log.info("command : " + command);
 
         // running shell service &
@@ -68,13 +66,13 @@ public class CommonLangService implements IContainerRunnerService {
     @Override
     public void cleanUp(String folder) {
         // clearing folder
-        fileUtil.deleteFolder(folder);
+        FileUtil.deleteFolder(folder);
     }
 
     @Override
     public String createTempFolder(CodeReqDto dto) {
         String userFolder = "temp/" + UUID.randomUUID().toString().substring(0, 6);
-        if(!fileUtil.createFolder(userFolder)) {
+        if(!FileUtil.createFolder(userFolder)) {
             log.error("failed to create folder");
             throw new RuntimeException("Server Error");
         }
@@ -84,16 +82,16 @@ public class CommonLangService implements IContainerRunnerService {
     @Override
     public String setUpFiles(CodeReqDto dto) {
         String userFolder = createTempFolder(dto);
-        String filePath = System.getProperty("user.dir") + "/" + userFolder + "/" + getFileName(dto.compiler());
+        String filePath = System.getProperty("user.dir") + "/" + userFolder + "/" + getFileName(dto.getCompiler());
 
-        if(!fileUtil.createFile(filePath, dto.code())) {
+        if(!FileUtil.createFile(filePath, dto.getCode())) {
             log.error("failed to write to file for code");
             throw new ServerException("Server Error");
         }
 
         String inputFilePath = System.getProperty("user.dir") + "/" + userFolder + "/input.txt";
 
-        if(!fileUtil.createFile(inputFilePath, dto.input() == null ? "" : dto.input())) {
+        if(!FileUtil.createFile(inputFilePath, dto.getInput() == null ? "" : dto.getInput())) {
             log.error("failed to write to file for input");
             throw new ServerException("Server Error");
         }
