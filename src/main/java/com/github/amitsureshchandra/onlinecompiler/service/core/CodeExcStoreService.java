@@ -17,6 +17,7 @@ public class CodeExcStoreService {
 
     public void store(String k, OutputResp outputResp) {
         redisTemplate.opsForHash().put(OUTPUT_KEY, k, outputResp);
+        log.info("Stored data in Redis. Key: {}, Value: {}", k, outputResp);
     }
 
     public OutputResp get(String key) {
