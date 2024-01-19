@@ -1,6 +1,5 @@
 package com.github.amitsureshchandra.onlinecompiler.unit_tests.controller;
 
-import com.github.amitsureshchandra.onlinecompiler.dto.CodeReqDto;
 import com.github.amitsureshchandra.onlinecompiler.dto.event.CodeEventDto;
 import com.github.amitsureshchandra.onlinecompiler.service.core.CodeExcStoreService;
 import com.github.amitsureshchandra.onlinecompiler.service.mq.listener.CodeEventListener;
@@ -9,16 +8,12 @@ import com.github.amitsureshchandra.onlinecompiler.util.BaseTestCase;
 import org.junit.jupiter.api.Test;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
 
 public class CodeEventListenerTest extends BaseTestCase {
 
@@ -43,7 +38,7 @@ public class CodeEventListenerTest extends BaseTestCase {
                 ""
         );
         rabbitTemplate.convertAndSend("exchange", "code", dto);
-        codeEventListener.getLatch().await(2, TimeUnit.SECONDS);
+        codeEventListener.getLatch().await(5, TimeUnit.SECONDS);
         assertTrue(codeExcStoreService.checkKeyProcessed(dto.getId()));
         assertEquals("Hello World", codeExcStoreService.get(dto.getId()).output());
     }

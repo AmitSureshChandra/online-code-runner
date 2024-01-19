@@ -1,5 +1,7 @@
 package com.github.amitsureshchandra.onlinecompiler.dto.resp;
 
-public record OutputResp(String output, String error, int exitCode) {
+import java.io.Serializable;
+
+public record OutputResp(String output, String error, int exitCode)  implements Serializable {
 
 }
