@@ -33,8 +33,8 @@ public class CodeEventListener {
     ObjectMapper objectMapper;
 
     @RabbitListener(queues = MQConfig.queueName)
-    void listenCodeEvent(@Payload CodeEventDto dto) {
-        codeEventProcessor.process(dto);
+    void listenCodeEvent(@Payload Message dto) {
+        codeEventProcessor.process(parseUtil.parseFromString(dto.getBody(), CodeEventDto.class));
         latch.countDown();
     }
 

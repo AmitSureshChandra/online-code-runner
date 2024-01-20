@@ -5,10 +5,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
-@NoArgsConstructor
 @Data
 @AllArgsConstructor
-@ToString
+@NoArgsConstructor
 public class CodeEventDto {
     private String id;
     private String code;

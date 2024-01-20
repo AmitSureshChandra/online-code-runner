@@ -21,6 +21,14 @@ public class ParseUtil {
             throw new RuntimeException(e);
         }
     }
+    public <T>T parseFromString(byte[] s, Class<T> classT) {
+        try {
+            return objectMapper.readValue(s, classT);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 
     public <T>String parseToString(T obj) {
         try {
