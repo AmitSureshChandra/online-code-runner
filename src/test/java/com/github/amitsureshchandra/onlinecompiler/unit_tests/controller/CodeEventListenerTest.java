@@ -4,10 +4,12 @@ import com.github.amitsureshchandra.onlinecompiler.dto.event.CodeEventDto;
 import com.github.amitsureshchandra.onlinecompiler.service.core.CodeExcStoreService;
 import com.github.amitsureshchandra.onlinecompiler.service.mq.listener.CodeEventListener;
 import com.github.amitsureshchandra.onlinecompiler.service.mq.processor.CodeEventProcessor;
+import com.github.amitsureshchandra.onlinecompiler.service.util.ParseUtil;
 import com.github.amitsureshchandra.onlinecompiler.util.BaseTestCase;
 import org.junit.jupiter.api.Test;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.json.JsonTest;
 
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
@@ -28,6 +30,9 @@ public class CodeEventListenerTest extends BaseTestCase {
 
     @Autowired
     CodeExcStoreService codeExcStoreService;
+
+    @Autowired
+    ParseUtil parseUtil;
 
     @Test
     void test() throws InterruptedException {
