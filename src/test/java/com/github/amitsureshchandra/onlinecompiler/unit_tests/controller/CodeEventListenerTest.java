@@ -9,7 +9,6 @@ import com.github.amitsureshchandra.onlinecompiler.util.BaseTestCase;
 import org.junit.jupiter.api.Test;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.json.JsonTest;
 
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
@@ -42,7 +41,7 @@ public class CodeEventListenerTest extends BaseTestCase {
                 "jdk8",
                 ""
         );
-        rabbitTemplate.convertAndSend("exchange", "code", dto);
+        rabbitTemplate.convertAndSend("exchange", "code", parseUtil.parseToString(dto));
         codeEventListener.getLatch().await(5, TimeUnit.SECONDS);
         assertTrue(codeExcStoreService.checkKeyProcessed(dto.getId()));
         assertEquals("Hello World", codeExcStoreService.get(dto.getId()).output());
