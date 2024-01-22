@@ -3,19 +3,26 @@ WORKDIR /opt/app
 
 COPY pom.xml ./
 COPY ./src ./src
+COPY ./entry.sh ./entry.sh
+COPY ./docker-files ./docker-files
 RUN mvn clean install -DskipTests
 
 FROM eclipse-temurin:17-jre-jammy
 WORKDIR /opt/app
 
-ENV CORS_ORIGINS=*
-ENV MQ_USERNAME=guest
-ENV MQ_PASS=guest
-ENV MQ_HOST=localhost
-ENV MQ_VHOST=/
-ENV MQ_PORT=5672
+ENV DOCKER_VERSION=25.0.7
 
-EXPOSE 8080
+EXPOSE 8090
 COPY --from=builder /opt/app/target/*.jar /opt/app/*.jar
+COPY --from=builder /opt/app/entry.sh /opt/app/entry.sh
+COPY --from=builder /opt/app/docker-files /opt/app/docker-files
 
-ENTRYPOINT ["java", "-jar", "/opt/app/*.jar"]
+RUN apt-get update
+RUN apt-get install docker.io -y
+
+#RUN curl -sfL -o docker.tgz "https://download.docker.com/linux/static/stable/x86_64/docker-${DOCKER_VERSION}.tgz" && \
+#  tar -xzf docker.tgz docker/docker --strip=1 --directory /usr/local/bin && \
+#  rm docker.tgz
+
+RUN chmod +x entry.sh
+ENTRYPOINT ["./entry.sh"]

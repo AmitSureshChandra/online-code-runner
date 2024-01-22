@@ -70,8 +70,8 @@ public class CommonLangService implements IContainerRunnerService {
     }
 
     @Override
-    public String createTempFolder(CodeReqDto dto) {
-        String userFolder = "temp/" + UUID.randomUUID().toString().substring(0, 6);
+    public String createTempFolder() {
+        String userFolder = System.getProperty("user.dir") + "/" + "temp" + File.separator + UUID.randomUUID().toString().substring(0, 6);
         if(!FileUtil.createFolder(userFolder)) {
             log.error("failed to create folder");
             throw new RuntimeException("Server Error");
@@ -81,15 +81,16 @@ public class CommonLangService implements IContainerRunnerService {
 
     @Override
     public String setUpFiles(CodeReqDto dto) {
-        String userFolder = createTempFolder(dto);
-        String filePath = System.getProperty("user.dir") + "/" + userFolder + "/" + getFileName(dto.getCompiler());
+        String userFolder = createTempFolder();
+        String filePath = userFolder + "/" + getFileName(dto.getCompiler());
+        log.info("filePath : {}", filePath);
 
         if(!FileUtil.createFile(filePath, dto.getCode())) {
             log.error("failed to write to file for code");
             throw new ServerException("Server Error");
         }
 
-        String inputFilePath = System.getProperty("user.dir") + "/" + userFolder + "/input.txt";
+        String inputFilePath = userFolder + "/input.txt";
 
         if(!FileUtil.createFile(inputFilePath, dto.getInput() == null ? "" : dto.getInput())) {
             log.error("failed to write to file for input");

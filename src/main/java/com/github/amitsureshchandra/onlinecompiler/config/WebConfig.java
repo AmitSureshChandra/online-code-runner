@@ -40,6 +40,6 @@ public class WebConfig implements WebMvcConfigurer {
                 .allowedOrigins(corsOrigin.split(",")) // Allow requests from example.com
                 .allowedMethods("GET", "POST", "PUT", "DELETE") // Allow specific HTTP methods
                 .allowedHeaders("*") // Allow all headers
-                .allowCredentials(true); // Allow credentials (e.g., cookies)
+                .allowCredentials(false); // Allow credentials (e.g., cookies)
     }
 }

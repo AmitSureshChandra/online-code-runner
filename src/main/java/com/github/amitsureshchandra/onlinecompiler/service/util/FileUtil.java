@@ -25,9 +25,14 @@ public class FileUtil {
     }
 
     public static boolean createFolder(String userFolder) {
-        var folder = new File(userFolder);
-        if(!folder.exists()) return folder.mkdir();
-        return true;
+        try {
+            System.out.println("Creating directory: " + Paths.get(userFolder).toAbsolutePath());
+            Files.createDirectory(Paths.get(userFolder));
+            return true;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
     public static boolean deleteFolder(String folderPath) {

@@ -4,6 +4,7 @@ import com.github.amitsureshchandra.onlinecompiler.config.MQConfig;
 import com.github.amitsureshchandra.onlinecompiler.dto.event.CodeEventDto;
 import com.github.amitsureshchandra.onlinecompiler.service.mq.processor.CodeEventProcessor;
 import com.github.amitsureshchandra.onlinecompiler.service.util.ParseUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.amqp.support.converter.MessageConverter;
 import org.springframework.messaging.handler.annotation.Payload;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Component;
 import java.util.concurrent.CountDownLatch;
 
 @Component
+@Slf4j
 public class CodeEventListener {
 
     final
@@ -33,6 +35,7 @@ public class CodeEventListener {
 
     @RabbitListener(queues = {MQConfig.queueName})
     void listenCodeEvent(@Payload String dto) {
+        log.info("event dto : {}", dto);
         codeEventProcessor.process(parseUtil.parseFromString(dto, CodeEventDto.class));
         latch.countDown();
     }
