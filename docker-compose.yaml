@@ -1,0 +1,18 @@
+version: '3.1'
+
+services:
+  rmq:
+    image: rabbitmq:3-management
+    container_name: rmq
+    ports:
+      - "15672:15672"
+      - "5672:5672"
+  online-compiler:
+    image: online-compiler-img:13.0
+    container_name: online-compiler
+    environment:
+      MQ_HOST: rmq
+    ports:
+      - "8090:8090"
+    depends_on:
+      - rmq
