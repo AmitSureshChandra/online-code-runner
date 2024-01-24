@@ -7,12 +7,21 @@ services:
     ports:
       - "15672:15672"
       - "5672:5672"
+  redis:
+    image: redis:latest
+    container_name: redis
+    ports:
+      - "6379:6379"
   online-compiler:
     image: online-compiler-img:13.0
     container_name: online-compiler
     environment:
       MQ_HOST: rmq
+      REDIS_HOST: redis
     ports:
       - "8090:8090"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock"
     depends_on:
       - rmq
+      - redis
