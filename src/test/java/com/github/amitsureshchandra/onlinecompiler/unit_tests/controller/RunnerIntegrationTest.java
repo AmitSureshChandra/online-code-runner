@@ -19,7 +19,7 @@ public class RunnerIntegrationTest extends BaseTestCaseController {
 
         CodeReqDto dto = new CodeReqDto(
                 "public class Solution {public static void main(String[] args) {System.out.println(\"Hello World\");}}",
-                "jdk8",
+                "jdk",
                 ""
         );
 
@@ -40,7 +40,7 @@ public class RunnerIntegrationTest extends BaseTestCaseController {
 
         CodeReqDto dto = new CodeReqDto(
                 "import java.util.*;\npublic class Solution {public static void main(String[] args) {System.out.println(\"Hello \" + new Scanner(System.in).next()+\"!\");}}",
-                "jdk8",
+                "jdk",
                 "Amit"
         );
 
@@ -63,12 +63,11 @@ public class RunnerIntegrationTest extends BaseTestCaseController {
                         .contentType("application/json")
                         .accept("application/json")
                 )
-                .andExpect(jsonPath("$.size()", is(6)))
+                .andExpect(jsonPath("$.size()", is(5)))
                 .andExpect(jsonPath("$.python3", is("Python 3")))
                 .andExpect(jsonPath("$.node20", is("Node 20")))
                 .andExpect(jsonPath("$.golang12", is("Golang")))
-                .andExpect(jsonPath("$.jdk8", is("Java 8")))
-                .andExpect(jsonPath("$.jdk20", is("Java 20")))
+                .andExpect(jsonPath("$.jdk", is("Java")))
                 .andExpect(jsonPath("$.gcc11", is("C/C++(gcc11)")));
     }
 }

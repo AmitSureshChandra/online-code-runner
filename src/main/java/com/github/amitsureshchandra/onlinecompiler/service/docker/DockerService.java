@@ -4,6 +4,7 @@ import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -15,11 +16,8 @@ public class DockerService {
 
     @PostConstruct
     void init() {
-        containerMap.put("jdk8", "online-compiler-jdk8");
-        containerMapInfo.put("jdk8", "Java 8");
-
-        containerMap.put("jdk20", "online-compiler-jdk20");
-        containerMapInfo.put("jdk20", "Java 20");
+        containerMap.put("jdk", "online-compiler-jdk");
+        containerMapInfo.put("jdk", "Java");
 
         containerMap.put("golang12", "online-compiler-golang12");
         containerMapInfo.put("golang12", "Golang");
@@ -40,23 +38,27 @@ public class DockerService {
 
     public String getDockerCommand(String userFolder, String compiler, String containerName) {
         switch (compiler) {
-            case "jdk8", "jdk20" -> {
-                return "docker run --name " + containerName + " --memory 100mb --cpu-quota=100000 -v " + System.getProperty("user.dir") + "/" + userFolder + ":/opt/myapp " + containerMap.get(compiler);
+            case "jdk" -> {
+                return "docker run --name " + containerName + " --memory 100mb --cpu-quota=100000 -v " + userFolder + ":/opt/myapp " + containerMap.get(compiler);
             }
             case "golang12" -> {
-                return "docker run --name " + containerName + " --memory 150mb --cpu-quota=100000 -v " + System.getProperty("user.dir") + "/" + userFolder + ":/usr/src/app " + containerMap.get(compiler);
+                return "docker run --name " + containerName + " --memory 150mb --cpu-quota=100000 -v " + userFolder + ":/usr/src/app " + containerMap.get(compiler);
             }
             case "python3" -> {
-                return "docker run --name " + containerName + " --memory 100mb --cpu-quota=100000 -v " + System.getProperty("user.dir") + "/" + userFolder + ":/usr/src/app " + containerMap.get(compiler);
+                return "docker run --name " + containerName + " --memory 100mb --cpu-quota=100000 -v " + userFolder + ":/usr/src/app " + containerMap.get(compiler);
             }
             case "node20" -> {
-                return "docker run --name " + containerName + " --memory 200mb --cpu-quota=100000 -v " + System.getProperty("user.dir") + "/" + userFolder + ":/usr/src/app " + containerMap.get(compiler);
+                return "docker run --name " + containerName + " --memory 200mb --cpu-quota=100000 -v " + userFolder + ":/usr/src/app " + containerMap.get(compiler);
             }
             case "gcc11" -> {
-                return "docker run --name " + containerName + " --memory 250mb --cpu-quota=100000 -v " + System.getProperty("user.dir") + "/" + userFolder + ":/usr/src/app " + containerMap.get(compiler);
+                return "docker run --name " + containerName + " --memory 250mb --cpu-quota=100000 -v " + userFolder + ":/usr/src/app " + containerMap.get(compiler);
             }
         }
         log.error("command not found for compiler " + compiler);
         throw new RuntimeException("Server Error");
+    }
+
+    public int getContainerMapSize() {
+        return containerMap.size();
     }
 }

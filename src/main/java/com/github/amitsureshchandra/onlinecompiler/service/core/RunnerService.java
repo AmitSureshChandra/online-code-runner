@@ -3,6 +3,7 @@ package com.github.amitsureshchandra.onlinecompiler.service.core;
 import com.github.amitsureshchandra.onlinecompiler.dto.CodeReqDto;
 import com.github.amitsureshchandra.onlinecompiler.dto.resp.OutputResp;
 import com.github.amitsureshchandra.onlinecompiler.exception.ServerException;
+import com.github.amitsureshchandra.onlinecompiler.exception.ValidationException;
 import com.github.amitsureshchandra.onlinecompiler.service.lang.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -24,7 +25,7 @@ public class RunnerService {
             var outputResp = runPrivate(dto);
             if(outputResp.exitCode() == 0) return outputResp;
             log.error(outputResp.toString());
-            throw new ServerException("Server Error");
+            throw new ValidationException("Some error occurred");
         } catch (IOException | InterruptedException e) {
             log.error(e.getMessage());
             throw new ServerException("Server Error");
