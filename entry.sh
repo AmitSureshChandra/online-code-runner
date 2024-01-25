@@ -2,9 +2,7 @@
 
 mkdir temp
 
-cd docker-files/jdk8 && docker build -t online-compiler-jdk8 .
-cd ../../
-cd docker-files/jdk20 && docker build -t online-compiler-jdk20 .
+cd docker-files/jdk && docker build -t online-compiler-jdk .
 cd ../../
 cd docker-files/golang12 && docker build -t online-compiler-golang12 .
 cd ../../

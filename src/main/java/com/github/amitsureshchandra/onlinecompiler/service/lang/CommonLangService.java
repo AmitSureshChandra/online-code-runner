@@ -39,7 +39,7 @@ public class CommonLangService implements IContainerRunnerService {
         log.info("command : " + command);
 
         // running shell service &
-        shellService.run(command);
+        OutputResp outputResp = shellService.run(command);
 
         LocalDateTime startTime = LocalDateTime.now();
         System.out.println("start time : " + startTime);
@@ -51,7 +51,7 @@ public class CommonLangService implements IContainerRunnerService {
 
         System.out.println("After docker stop "+ LocalDateTime.now());
         // returning output
-        OutputResp outputResp = shellService.run("docker logs " + containerName);
+        outputResp = shellService.run("docker logs " + containerName);
 
         System.out.println("After docker log "+ LocalDateTime.now());
         System.out.println(outputResp.output().length());
@@ -101,8 +101,7 @@ public class CommonLangService implements IContainerRunnerService {
 
     private String getFileName(String compiler) {
         switch (compiler) {
-            case "jdk8":
-            case "jdk20":
+            case "jdk":
                 return "Solution.java";
             case "gcc11":
                 return "main.cpp";

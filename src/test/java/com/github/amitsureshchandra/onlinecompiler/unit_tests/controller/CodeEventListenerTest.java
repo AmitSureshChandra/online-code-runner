@@ -38,7 +38,7 @@ public class CodeEventListenerTest extends BaseTestCase {
         CodeEventDto dto = new CodeEventDto(
                 UUID.randomUUID().toString(),
                 "public class Solution {public static void main(String[] args) {System.out.println(\"Hello World\");}}",
-                "jdk8",
+                "jdk",
                 ""
         );
         rabbitTemplate.convertAndSend("exchange", "code", parseUtil.parseToString(dto));

@@ -19,7 +19,7 @@ public class InitTest {
 
     public static void afterEnd() throws IOException {
         Files.delete(Path.of("temp"));
-        Process process = Runtime.getRuntime().exec(new String[]{"docker", "rm", "online-compiler-jdk8", "online-compiler-jdk20", "online-compiler-golang12", "online-compiler-python3", "online-compiler-node20", "online-compiler-gcc11"});
+        Process process = Runtime.getRuntime().exec(new String[]{"docker", "rm", "online-compiler-jdk", "online-compiler-golang12", "online-compiler-python3", "online-compiler-node20", "online-compiler-gcc11"});
         try {
             process.waitFor();
         } catch (InterruptedException e) {

@@ -19,8 +19,7 @@
 
 build docker image using following command by going in `./docker-files/` folders
 ```shell
-cd docker-files/jdk8 && docker build -t online-compiler-jdk8 .
-cd docker-files/jdk20 && docker build -t online-compiler-jdk20 .
+cd docker-files/jdk && docker build -t online-compiler-jdk .
 cd docker-files/golang12 && docker build -t online-compiler-golang12 .
 cd docker-files/python3 && docker build -t online-compiler-python3 .
 cd docker-files/node20 && docker build -t online-compiler-node20 .
