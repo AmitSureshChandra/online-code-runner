@@ -39,3 +39,7 @@ mkdir temp
 chmod +x run.sh
 ./run.sh
 ```
+
+
+# need to run rabbitmq & redis while running test cases
+- test container feature pending 
