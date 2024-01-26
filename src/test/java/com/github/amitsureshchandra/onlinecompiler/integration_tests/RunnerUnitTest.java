@@ -23,7 +23,6 @@ public class RunnerUnitTest extends BaseIntegrationTest {
 
         // fetching compilers
 
-        /*
         Map<String, String> compilers = restTemplate.getForEntity("http://localhost:" + getServerPort()+"/api/v1/run/compilers", Map.class, new HashMap<>()).getBody();
         assert compilers != null;
         assertEquals(5, compilers.size());
@@ -61,19 +60,17 @@ public class RunnerUnitTest extends BaseIntegrationTest {
         assertEquals(outputResp.error(), "");
         assertEquals(outputResp.exitCode(), 0);
 
-         */
-
         // with errors
 
-        String jsonPayload = objectMapper.writeValueAsString(new CodeReqDto(
+        jsonPayload = objectMapper.writeValueAsString(new CodeReqDto(
                 "import java.util.*;\npublic class Solution {public static void main(String[] args) {System.out.println(\"Hello \" + new Scanner(System.in).next()+\"!\")}}",
                 "jdk",
                 "Amit"
         ));
 
-        var requestEntity = new HttpEntity<>(jsonPayload, headers);
+        requestEntity = new HttpEntity<>(jsonPayload, headers);
 
-        var outputResp = restTemplate.postForEntity("http://localhost:" + getServerPort()+"/api/v1/run", requestEntity, OutputResp.class).getBody();
+        outputResp = restTemplate.postForEntity("http://localhost:" + getServerPort()+"/api/v1/run", requestEntity, OutputResp.class).getBody();
         System.out.println(outputResp);
         assert outputResp != null;
         assertEquals(outputResp.output(), "");
