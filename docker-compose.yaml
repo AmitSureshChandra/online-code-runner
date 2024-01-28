@@ -13,15 +13,18 @@ services:
     ports:
       - "6379:6379"
   online-compiler:
-    image: online-compiler-img:13.0
+    image: online-compiler-img
     container_name: online-compiler
     environment:
       MQ_HOST: rmq
       REDIS_HOST: redis
+      COMPILER_TMP_FOLDER : /opt/app/temp/
+      HOST_TMP_FOLDER : /home/amit/tmp/
     ports:
       - "8090:8090"
     volumes:
       - "/var/run/docker.sock:/var/run/docker.sock"
+      - "/home/amit/tmp:/opt/app/temp"
     depends_on:
       - rmq
       - redis

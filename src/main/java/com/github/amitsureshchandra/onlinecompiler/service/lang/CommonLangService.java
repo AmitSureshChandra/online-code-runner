@@ -9,6 +9,7 @@ import com.github.amitsureshchandra.onlinecompiler.service.file.FileService;
 import com.github.amitsureshchandra.onlinecompiler.service.shell.ShellService;
 import com.github.amitsureshchandra.onlinecompiler.service.util.FileUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
@@ -22,6 +23,9 @@ public class CommonLangService implements IContainerRunnerService {
     final DockerService dockerService;
     final FileService fileService;
     final ShellService shellService;
+
+    @Value("${compiler-tmp-folder}")
+    String compilerTmpFolder;
 
     public CommonLangService(DockerService dockerService, FileService fileService, ShellService shellService) {
         this.dockerService = dockerService;
@@ -58,7 +62,7 @@ public class CommonLangService implements IContainerRunnerService {
         // clearing docker image
         shellService.run("docker rm " + containerName);
 
-        cleanUp(userFolder);
+        cleanUp(compilerTmpFolder + userFolder);
 
         return outputResp;
     }
@@ -71,18 +75,19 @@ public class CommonLangService implements IContainerRunnerService {
 
     @Override
     public String createTempFolder() {
-        String userFolder = System.getProperty("user.dir") + "/" + "temp" + File.separator + UUID.randomUUID().toString().substring(0, 6);
+        String tmPfolder =  UUID.randomUUID().toString().substring(0, 6);
+        String userFolder = compilerTmpFolder + tmPfolder;
         if(!FileUtil.createFolder(userFolder)) {
             log.error("failed to create folder");
             throw new RuntimeException("Server Error");
         }
-        return userFolder;
+        return tmPfolder;
     }
 
     @Override
     public String setUpFiles(CodeReqDto dto) {
         String userFolder = createTempFolder();
-        String filePath = userFolder + "/" + getFileName(dto.getCompiler());
+        String filePath = compilerTmpFolder +  userFolder + "/" + getFileName(dto.getCompiler());
         log.info("filePath : {}", filePath);
 
         if(!FileUtil.createFile(filePath, dto.getCode())) {
@@ -90,7 +95,7 @@ public class CommonLangService implements IContainerRunnerService {
             throw new ServerException("Server Error");
         }
 
-        String inputFilePath = userFolder + "/input.txt";
+        String inputFilePath = compilerTmpFolder + userFolder + "/input.txt";
 
         if(!FileUtil.createFile(inputFilePath, dto.getInput() == null ? "" : dto.getInput())) {
             log.error("failed to write to file for input");
