@@ -11,8 +11,11 @@ import java.io.InputStreamReader;
 public class ShellService {
 
     public OutputResp run(String command) throws IOException, InterruptedException {
+
+        ProcessBuilder processBuilder = new ProcessBuilder(command.split(" "));
+
         // Start the process
-        var process = Runtime.getRuntime().exec(command);
+        var process = processBuilder.start();
 
         var output = new StringBuilder();
         var error = new StringBuilder();
