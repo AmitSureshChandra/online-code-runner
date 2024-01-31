@@ -3,9 +3,13 @@ package com.github.amitsureshchandra.onlinecompiler.integration_tests;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.amitsureshchandra.onlinecompiler.dto.CodeReqDto;
 import com.github.amitsureshchandra.onlinecompiler.dto.resp.OutputResp;
+import com.github.amitsureshchandra.onlinecompiler.service.mq.listener.CodeEventListener;
 import com.github.amitsureshchandra.onlinecompiler.util.BaseIntegrationTest;
 import org.junit.jupiter.api.Test;
-import org.springframework.http.*;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -13,7 +17,10 @@ import java.util.Map;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 
-public class RunnerUnitTest extends BaseIntegrationTest {
+public class RunnerIntegrationTest extends BaseIntegrationTest {
+
+    @MockBean
+    CodeEventListener codeEventListener;
 
     @Test
     void run_test() throws JsonProcessingException {

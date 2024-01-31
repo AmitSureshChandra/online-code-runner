@@ -9,6 +9,7 @@ import com.github.amitsureshchandra.onlinecompiler.util.BaseTestCase;
 import org.junit.jupiter.api.Test;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ActiveProfiles;
 
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;

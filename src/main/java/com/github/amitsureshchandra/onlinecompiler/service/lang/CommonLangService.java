@@ -33,6 +33,10 @@ public class CommonLangService implements IContainerRunnerService {
         this.shellService = shellService;
     }
 
+    String getCompilerTmpFolder() {
+        return compilerTmpFolder + File.separator;
+    }
+
     @Override
     public OutputResp run(CodeReqDto dto) throws IOException, InterruptedException {
         String userFolder = setUpFiles(dto);
@@ -62,7 +66,7 @@ public class CommonLangService implements IContainerRunnerService {
         // clearing docker image
         shellService.run("docker rm " + containerName);
 
-        cleanUp(compilerTmpFolder + userFolder);
+        cleanUp(getCompilerTmpFolder() + userFolder);
 
         return outputResp;
     }
@@ -76,7 +80,7 @@ public class CommonLangService implements IContainerRunnerService {
     @Override
     public String createTempFolder() {
         String tmPfolder =  UUID.randomUUID().toString().substring(0, 6);
-        String userFolder = compilerTmpFolder + tmPfolder;
+        String userFolder = getCompilerTmpFolder() + tmPfolder;
         if(!FileUtil.createFolder(userFolder)) {
             log.error("failed to create folder");
             throw new RuntimeException("Server Error");
@@ -87,7 +91,7 @@ public class CommonLangService implements IContainerRunnerService {
     @Override
     public String setUpFiles(CodeReqDto dto) {
         String userFolder = createTempFolder();
-        String filePath = compilerTmpFolder +  userFolder + "/" + getFileName(dto.getCompiler());
+        String filePath = getCompilerTmpFolder() +  userFolder + "/" + getFileName(dto.getCompiler());
         log.info("filePath : {}", filePath);
 
         if(!FileUtil.createFile(filePath, dto.getCode())) {
@@ -95,7 +99,7 @@ public class CommonLangService implements IContainerRunnerService {
             throw new ServerException("Server Error");
         }
 
-        String inputFilePath = compilerTmpFolder + userFolder + "/input.txt";
+        String inputFilePath = getCompilerTmpFolder() + userFolder + "/input.txt";
 
         if(!FileUtil.createFile(inputFilePath, dto.getInput() == null ? "" : dto.getInput())) {
             log.error("failed to write to file for input");

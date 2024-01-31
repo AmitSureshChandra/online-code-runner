@@ -1,8 +1,10 @@
 package com.github.amitsureshchandra.onlinecompiler.unit_tests.controller;
 
 import com.github.amitsureshchandra.onlinecompiler.dto.CodeReqDto;
+import com.github.amitsureshchandra.onlinecompiler.service.mq.listener.CodeEventListener;
 import com.github.amitsureshchandra.onlinecompiler.util.BaseTestCaseController;
 import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import static org.hamcrest.Matchers.blankString;
@@ -11,8 +13,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+public class RunnerUnitTest extends BaseTestCaseController {
 
-public class RunnerIntegrationTest extends BaseTestCaseController {
+    @MockBean
+    CodeEventListener codeEventListener;
 
     @Test
     void test_code_execution() throws Exception {

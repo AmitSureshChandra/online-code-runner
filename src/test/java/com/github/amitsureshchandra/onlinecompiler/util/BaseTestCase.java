@@ -10,7 +10,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 public class BaseTestCase {
 
     static {
-        InitTest.init();
+//        InitTest.init();
         log.info("initialized containers & tmp directory");
     }
 
