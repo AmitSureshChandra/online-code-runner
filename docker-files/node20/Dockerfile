@@ -1,7 +1,7 @@
 
-FROM node:20
+FROM node:14-alpine
 
-WORKDIR /usr/src/app
+WORKDIR /opt/myapp
 
 COPY package*.json ./
 
