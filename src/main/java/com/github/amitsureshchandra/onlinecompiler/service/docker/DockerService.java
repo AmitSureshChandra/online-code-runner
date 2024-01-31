@@ -11,8 +11,8 @@ import java.util.Map;
 @Service
 @Slf4j
 public class DockerService {
-    HashMap<String, String> containerMap = new HashMap<>();
-    HashMap<String, String> containerMapInfo = new HashMap<>();
+    public HashMap<String, String> containerMap = new HashMap<>();
+    public HashMap<String, String> containerMapInfo = new HashMap<>();
 
     @Value("${host-temp-folder}")
     String hostTempFolder;

@@ -39,7 +39,7 @@ public class RunnerUnitTest extends BaseIntegrationTest {
 
         OutputResp outputResp = restTemplate.postForEntity("http://localhost:" + getServerPort()+"/api/v1/run", requestEntity, OutputResp.class).getBody();
         assert outputResp != null;
-        assertEquals(outputResp.output(), "Hello World");
+        assertEquals(outputResp.output(), "Hello World\n");
         assertEquals(outputResp.error(), "");
         assertEquals(outputResp.exitCode(), 0);
 
@@ -55,7 +55,7 @@ public class RunnerUnitTest extends BaseIntegrationTest {
 
         outputResp = restTemplate.postForEntity("http://localhost:" + getServerPort()+"/api/v1/run", requestEntity, OutputResp.class).getBody();
         assert outputResp != null;
-        assertEquals(outputResp.output(), "Hello Amit!");
+        assertEquals(outputResp.output(), "Hello Amit!\n");
         assertEquals(outputResp.error(), "");
         assertEquals(outputResp.exitCode(), 0);
 
@@ -76,7 +76,7 @@ public class RunnerUnitTest extends BaseIntegrationTest {
         assertEquals(outputResp.error(), "Solution.java:2: error: ';' expected\n" +
                 "public class Solution {public static void main(String[] args) {System.out.println(\"Hello \" + new Scanner(System.in).next()+\"!\")}}\n" +
                 "                                                                                                                               ^\n" +
-                "1 error");
+                "1 error\n");
         assertEquals(outputResp.exitCode(), 0);
     }
 }
