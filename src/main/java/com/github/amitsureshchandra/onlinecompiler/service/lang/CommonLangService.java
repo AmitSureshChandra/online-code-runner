@@ -8,6 +8,12 @@ import com.github.amitsureshchandra.onlinecompiler.service.docker.DockerService;
 import com.github.amitsureshchandra.onlinecompiler.service.file.FileService;
 import com.github.amitsureshchandra.onlinecompiler.service.shell.ShellService;
 import com.github.amitsureshchandra.onlinecompiler.service.util.FileUtil;
+import com.github.dockerjava.api.DockerClient;
+import com.github.dockerjava.api.command.CreateContainerResponse;
+import com.github.dockerjava.api.command.LogContainerCmd;
+import com.github.dockerjava.api.exception.NotModifiedException;
+import com.github.dockerjava.api.model.*;
+import com.github.dockerjava.core.command.LogContainerResultCallback;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -24,13 +30,20 @@ public class CommonLangService implements IContainerRunnerService {
     final FileService fileService;
     final ShellService shellService;
 
+    final DockerClient dockerClient;
+
     @Value("${compiler-tmp-folder}")
     String compilerTmpFolder;
 
-    public CommonLangService(DockerService dockerService, FileService fileService, ShellService shellService) {
+    @Value("${host-temp-folder}")
+    String hostTempFolder;
+
+
+    public CommonLangService(DockerService dockerService, FileService fileService, ShellService shellService, DockerClient dockerClient) {
         this.dockerService = dockerService;
         this.fileService = fileService;
         this.shellService = shellService;
+        this.dockerClient = dockerClient;
     }
 
     String getCompilerTmpFolder() {
@@ -43,32 +56,61 @@ public class CommonLangService implements IContainerRunnerService {
 
         // creating a container
         String containerName = UUID.randomUUID().toString();
-        String command = dockerService.getDockerCommand(userFolder, dto.getCompiler(), containerName);
-        log.info("command : " + command);
 
-        // running shell service &
-        OutputResp outputResp = shellService.run(command);
+        CreateContainerResponse container =  dockerClient
+            .createContainerCmd(dockerService.containerMap.get(dto.getCompiler()))
+                .withHostName(containerName)
+                .withHostConfig(new HostConfig().withCpuCount(1L).withCpuPercent(100L).withMemory(104857600L).withBinds(new Bind( hostTempFolder + userFolder, Volume.parse("/opt/myapp"), AccessMode.rw)))
+                .exec();
+
+        dockerClient.startContainerCmd(container.getId()).exec();
 
         LocalDateTime startTime = LocalDateTime.now();
         System.out.println("start time : " + startTime);
-        int waitTime = 10; // 10ms
+
+        int waitTime = 1000; // 10ms
         Thread.sleep(waitTime);
 
-        // stopping container
-        shellService.run("docker stop " + containerName);
 
-        System.out.println("After docker stop "+ LocalDateTime.now());
         // returning output
-        outputResp = shellService.run("docker logs " + containerName);
+        LogContainerCmd logContainerCmd = dockerClient.logContainerCmd(container.getId())
+                .withStdOut(true)
+                .withStdErr(true)
+                .withFollowStream(false);
 
-        System.out.println("After docker log "+ LocalDateTime.now());
-        System.out.println(outputResp.output().length());
+        final StringBuilder output = new StringBuilder();
+        final StringBuilder error = new StringBuilder();
+        final StringBuilder fullSysOut = new StringBuilder();
+        logContainerCmd.exec(new LogContainerResultCallback() {
+            @Override
+            public void onNext(Frame item) {
+                // Process each log frame (stdout or stderr)
+                fullSysOut.append(new String(item.getPayload()));
+                if(item.getStreamType().equals(StreamType.STDERR)) {
+                    error.append(new String(item.getPayload()));
+                } else {
+                    output.append(new String(item.getPayload()));
+                }
+            }
+        }).awaitCompletion();
+
+        postExecution(container.getId(), userFolder);
+
+        return new OutputResp(output.toString(), error.toString(), 0);
+    }
+
+    private void postExecution(String containerId, String userFolder) {
+        // stopping container
+        try {
+            dockerClient.stopContainerCmd(containerId).exec();
+        } catch (NotModifiedException notModifiedException) {
+            log.error(notModifiedException.getMessage());
+        }
+
         // clearing docker image
-        shellService.run("docker rm " + containerName);
+        dockerClient.removeContainerCmd(containerId).exec();
 
         cleanUp(getCompilerTmpFolder() + userFolder);
-
-        return outputResp;
     }
 
     @Override
