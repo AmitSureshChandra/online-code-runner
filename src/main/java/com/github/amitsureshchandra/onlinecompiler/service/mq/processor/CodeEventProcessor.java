@@ -3,8 +3,8 @@ package com.github.amitsureshchandra.onlinecompiler.service.mq.processor;
 import com.github.amitsureshchandra.onlinecompiler.dto.CodeReqDto;
 import com.github.amitsureshchandra.onlinecompiler.dto.event.CodeEventDto;
 import com.github.amitsureshchandra.onlinecompiler.dto.resp.OutputResp;
-import com.github.amitsureshchandra.onlinecompiler.service.core.CodeExcStoreService;
-import com.github.amitsureshchandra.onlinecompiler.service.core.RunnerService;
+import com.github.amitsureshchandra.onlinecompiler.service.core.CodeExcStore;
+import com.github.amitsureshchandra.onlinecompiler.service.core.IRunnerService;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -13,21 +13,21 @@ import org.springframework.stereotype.Service;
 
 @Service
 @Slf4j
-public class CodeEventProcessor {
+public class CodeEventProcessor implements IEventProcessor<CodeEventDto> {
 
-    final RunnerService runnerService;
+    final IRunnerService IRunnerService;
     final ModelMapper modelMapper;
 
-    final CodeExcStoreService codeExcStoreService;
+    final CodeExcStore codeExcStore;
 
     final RabbitTemplate rabbitTemplate;
     private final RedisTemplate<String, Object> redisTemplate;
 
 
-    public CodeEventProcessor(RunnerService runnerService, ModelMapper modelMapper, CodeExcStoreService codeExcStoreService, RabbitTemplate rabbitTemplate, RedisTemplate<String, Object> redisTemplate) {
-        this.runnerService = runnerService;
+    public CodeEventProcessor(IRunnerService IRunnerService, ModelMapper modelMapper, CodeExcStore codeExcStore, RabbitTemplate rabbitTemplate, RedisTemplate<String, Object> redisTemplate) {
+        this.IRunnerService = IRunnerService;
         this.modelMapper = modelMapper;
-        this.codeExcStoreService = codeExcStoreService;
+        this.codeExcStore = codeExcStore;
         this.rabbitTemplate = rabbitTemplate;
         this.redisTemplate = redisTemplate;
     }
@@ -36,9 +36,9 @@ public class CodeEventProcessor {
         log.info(String.valueOf(dto));
 
         // run code
-        OutputResp outputResp = runnerService.run(modelMapper.map(dto, CodeReqDto.class));
+        OutputResp outputResp = IRunnerService.runCode(modelMapper.map(dto, CodeReqDto.class));
 
         // adding on redis
-        codeExcStoreService.store(dto.getId(), outputResp);
+        codeExcStore.store(dto.getId(), outputResp);
     }
 }
