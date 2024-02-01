@@ -14,7 +14,7 @@ import java.util.concurrent.CountDownLatch;
 
 @Component
 @Slf4j
-public class CodeEventListener {
+public class CodeEventListener implements IEventListener{
 
     final
     MessageConverter msgConverter;
@@ -33,8 +33,9 @@ public class CodeEventListener {
         this.parseUtil = parseUtil;
     }
 
+    @Override
     @RabbitListener(queues = {MQConfig.queueName})
-    void listenCodeEvent(@Payload String dto) {
+    public void listenCodeEvent(@Payload String dto) {
         log.info("event dto : {}", dto);
         codeEventProcessor.process(parseUtil.parseFromString(dto, CodeEventDto.class));
         latch.countDown();
