@@ -110,6 +110,8 @@ public class CommonLangService implements IContainerRunnerService {
         // clearing docker image
         dockerClient.removeContainerCmd(containerId).exec();
 
+        // clearing temp folder
+        cleanUp(compilerTmpFolder + userFolder);
         cleanUp(getCompilerTmpFolder() + userFolder);
     }
 
