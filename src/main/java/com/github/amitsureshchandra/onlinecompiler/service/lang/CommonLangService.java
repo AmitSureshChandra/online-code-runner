@@ -60,7 +60,7 @@ public class CommonLangService implements IContainerRunnerService {
         CreateContainerResponse container =  dockerClient
             .createContainerCmd(dockerService.containerMap.get(dto.getCompiler()))
                 .withHostName(containerName)
-                .withHostConfig(new HostConfig().withCpuCount(1L).withCpuPercent(100L).withMemory(104857600L).withBinds(new Bind( hostTempFolder + userFolder, Volume.parse("/opt/myapp"), AccessMode.rw)))
+                .withHostConfig(new HostConfig().withCpuCount(1L).withCpuPercent(100L).withMemory(104857600L).withBinds(new Bind( hostTempFolder + File.separator + userFolder, Volume.parse("/opt/myapp"), AccessMode.rw)))
                 .exec();
 
         dockerClient.startContainerCmd(container.getId()).exec();
@@ -70,7 +70,6 @@ public class CommonLangService implements IContainerRunnerService {
 
         int waitTime = 1000; // 10ms
         Thread.sleep(waitTime);
-
 
         // returning output
         LogContainerCmd logContainerCmd = dockerClient.logContainerCmd(container.getId())
@@ -108,10 +107,9 @@ public class CommonLangService implements IContainerRunnerService {
         }
 
         // clearing docker image
-        dockerClient.removeContainerCmd(containerId).exec();
+//        dockerClient.removeContainerCmd(containerId).exec();
 
         // clearing temp folder
-        cleanUp(compilerTmpFolder + userFolder);
         cleanUp(getCompilerTmpFolder() + userFolder);
     }
 

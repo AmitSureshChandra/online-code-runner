@@ -34,7 +34,7 @@ public class RunnerUnitTest extends BaseTestCaseController {
                 )
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.output", is("Hello World")))
+                .andExpect(jsonPath("$.output", is("Hello World\n")))
                 .andExpect(jsonPath("$.error", is(blankString())))
                 .andExpect(jsonPath("$.exitCode", is(0)));
     }
@@ -55,7 +55,7 @@ public class RunnerUnitTest extends BaseTestCaseController {
                 )
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.output", is("Hello Amit!")))
+                .andExpect(jsonPath("$.output", is("Hello Amit!\n")))
                 .andExpect(jsonPath("$.error", is(blankString())))
                 .andExpect(jsonPath("$.exitCode", is(0)));
     }

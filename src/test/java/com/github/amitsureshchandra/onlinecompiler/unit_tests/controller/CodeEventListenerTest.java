@@ -45,6 +45,6 @@ public class CodeEventListenerTest extends BaseTestCase {
         rabbitTemplate.convertAndSend("exchange", "code", parseUtil.parseToString(dto));
         codeEventListener.getLatch().await(5, TimeUnit.SECONDS);
         assertTrue(codeExcStoreService.checkKeyProcessed(dto.getId()));
-        assertEquals("Hello World", codeExcStoreService.get(dto.getId()).output());
+        assertEquals("Hello World\n", codeExcStoreService.get(dto.getId()).output());
     }
 }
