@@ -1,35 +1,31 @@
 package com.github.amitsureshchandra.onlinecompiler.service.core;
 
 import com.github.amitsureshchandra.onlinecompiler.dto.resp.OutputResp;
-import com.github.amitsureshchandra.onlinecompiler.service.util.ParseUtil;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.stereotype.Service;
 
-@Service
-@Slf4j
-public class CodeExcStore extends CodeExcStoreImpl {
-    private final RedisTemplate<String, Object> redisTemplate;
+public abstract class CodeExcStore {
+    protected String OUTPUT_KEY = "output";
 
-    final ParseUtil parseUtil;
+    /**
+     * store code response with key of excId
+     * @param k excId
+     * @param outputResp
+     */
+    abstract public void store(String k, OutputResp outputResp);
 
-    public CodeExcStore(RedisTemplate<String, Object> redisTemplate, ParseUtil parseUtil) {
-        this.redisTemplate = redisTemplate;
-        this.parseUtil = parseUtil;
+    /**
+     * get code output with excId
+     * @param key
+     * @return
+     */
+    abstract public OutputResp get(String key);
+
+    /**
+     * get hashKey
+     * @return
+     */
+    protected String getHashKey() {
+        return OUTPUT_KEY;
     }
 
-    public void store(String k, OutputResp outputResp) {
-        redisTemplate.opsForHash().put(getHashKey(), k, parseUtil.parseToString(outputResp));
-        log.info("Stored data in Redis. Key: {}, Value: {}", k, parseUtil.parseToString(outputResp));
-    }
-
-    public OutputResp get(String key) {
-        Object obj = redisTemplate.opsForHash().get(getHashKey(), key);
-        if(obj == null) return null;
-        return parseUtil.parseFromString(obj.toString(), OutputResp.class);
-    }
-
-    public boolean checkKeyProcessed(String key) {
-        return redisTemplate.opsForHash().hasKey(getHashKey(), key);
-    }
+    public abstract boolean checkKeyProcessed(String excId);
 }

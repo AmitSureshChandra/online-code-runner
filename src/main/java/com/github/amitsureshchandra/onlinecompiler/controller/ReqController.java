@@ -35,6 +35,11 @@ public class ReqController {
         return IRunnerService.getCodeExcStatus(excId);
     }
 
+    @GetMapping("/async/output/{excId}")
+    OutputResp runAsyncOutput(@PathVariable String excId) {
+        return IRunnerService.getOutput(excId);
+    }
+
     @GetMapping("/compilers")
     Map<String, String> supportedCompilers() {
         return IDockerService.getSupportedLanguages();

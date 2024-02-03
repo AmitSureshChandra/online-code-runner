@@ -16,7 +16,7 @@ import java.util.concurrent.TimeUnit;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class CodeEventListenerTest extends BaseTestCase {
+public class CodeEventListenerUnitTest extends BaseTestCase {
 
     @Autowired
     RabbitTemplate rabbitTemplate;
