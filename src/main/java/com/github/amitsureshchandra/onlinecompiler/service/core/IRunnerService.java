@@ -40,5 +40,6 @@ public interface IRunnerService {
     OutputResp runCode(CodeReqDto codeReqDto);
     String runCodeAsync(CodeReqDto codeReqDto);
     String getCodeExcStatus(String excId);
+    OutputResp getOutput(String excId);
     void postCleanUp(String userFolder, String containerId);
 }

@@ -1,14 +1,20 @@
 package com.github.amitsureshchandra.onlinecompiler.service.core;
 
+import com.github.amitsureshchandra.onlinecompiler.config.MQConfig;
 import com.github.amitsureshchandra.onlinecompiler.dto.CodeReqDto;
 import com.github.amitsureshchandra.onlinecompiler.dto.cmd.OutputLogDto;
+import com.github.amitsureshchandra.onlinecompiler.dto.event.CodeEventDto;
 import com.github.amitsureshchandra.onlinecompiler.dto.resp.OutputResp;
+import com.github.amitsureshchandra.onlinecompiler.enums.CodeExcStatus;
 import com.github.amitsureshchandra.onlinecompiler.exception.ServerException;
 import com.github.amitsureshchandra.onlinecompiler.service.docker.IDockerService;
 import com.github.amitsureshchandra.onlinecompiler.service.util.FileUtil;
+import com.github.amitsureshchandra.onlinecompiler.service.util.ParseUtil;
 import com.github.amitsureshchandra.onlinecompiler.service.util.TimeUtil;
 import com.github.dockerjava.api.exception.NotModifiedException;
 import lombok.extern.slf4j.Slf4j;
+import org.modelmapper.ModelMapper;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -21,11 +27,23 @@ import java.util.UUID;
 public class RunnerServiceImpl implements IRunnerService {
     final IDockerService IDockerService;
 
+    final RabbitTemplate rabbitTemplate ;
+
+    final CodeExcStore codeExcStore;
+
+    final ParseUtil parseUtil;
+
     @Value("${compiler-tmp-folder}")
     String compilerTmpFolder;
 
-    public RunnerServiceImpl(IDockerService IDockerService) {
+    final ModelMapper modelMapper;
+
+    public RunnerServiceImpl(IDockerService IDockerService, RabbitTemplate rabbitTemplate , CodeExcStore codeExcStore, ParseUtil parseUtil, ModelMapper modelMapper) {
         this.IDockerService = IDockerService;
+        this.rabbitTemplate  = rabbitTemplate ;
+        this.codeExcStore = codeExcStore;
+        this.parseUtil = parseUtil;
+        this.modelMapper = modelMapper;
     }
 
     String getCompilerTmpFolder() {
@@ -86,12 +104,21 @@ public class RunnerServiceImpl implements IRunnerService {
 
     @Override
     public String runCodeAsync(CodeReqDto codeReqDto) {
-        return null;
+        UUID excId = UUID.randomUUID();
+        CodeEventDto codeEventDto = modelMapper.map(codeReqDto, CodeEventDto.class);
+        codeEventDto.setId(excId.toString());
+        rabbitTemplate.convertAndSend(MQConfig.exchangeName, "code", parseUtil.parseToString(codeEventDto));
+        return excId.toString();
     }
 
     @Override
     public String getCodeExcStatus(String excId) {
-        return null;
+        return codeExcStore.checkKeyProcessed(excId) ? CodeExcStatus.EXECUTED.toString() : CodeExcStatus.PENDING.toString();
+    }
+
+    @Override
+    public OutputResp getOutput(String excId) {
+        return codeExcStore.get(excId);
     }
 
     @Override
