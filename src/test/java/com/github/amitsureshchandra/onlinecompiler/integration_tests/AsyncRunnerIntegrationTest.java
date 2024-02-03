@@ -42,8 +42,6 @@ public class AsyncRunnerIntegrationTest extends BaseIntegrationTest {
         assert compilers != null;
         assertEquals(5, compilers.size());
 
-        // without input
-
         String jsonPayload = objectMapper.writeValueAsString(new CodeReqDto(
                 "public class Solution {public static void main(String[] args) {System.out.println(\"Hello World\");}}",
                 "jdk",
