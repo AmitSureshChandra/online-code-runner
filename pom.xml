@@ -9,10 +9,10 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.github.amitsureshchandra</groupId>
-    <artifactId>online-compiler</artifactId>
+    <artifactId>online-code-runner</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>online-compiler</name>
-    <description>online-compiler</description>
+    <name>online-code-runner</name>
+    <description>online-code-runner</description>
     <properties>
         <java.version>17</java.version>
         <maven.compiler.source>17</maven.compiler.source>
