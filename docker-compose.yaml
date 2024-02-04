@@ -12,9 +12,9 @@ services:
     container_name: redis
     ports:
       - "6379:6379"
-  online-compiler:
-    image: online-compiler-img
-    container_name: online-compiler
+  online-code-runner:
+    image: online-code-runner-img
+    container_name: online-code-runner
     environment:
       MQ_HOST: rmq
       REDIS_HOST: redis
