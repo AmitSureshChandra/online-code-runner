@@ -25,7 +25,7 @@ import java.util.UUID;
 @Slf4j
 @Service
 public class RunnerServiceImpl implements IRunnerService {
-    final IDockerService IDockerService;
+    final IDockerService dockerService;
 
     final RabbitTemplate rabbitTemplate ;
 
@@ -38,8 +38,8 @@ public class RunnerServiceImpl implements IRunnerService {
 
     final ModelMapper modelMapper;
 
-    public RunnerServiceImpl(IDockerService IDockerService, RabbitTemplate rabbitTemplate , CodeExcStore codeExcStore, ParseUtil parseUtil, ModelMapper modelMapper) {
-        this.IDockerService = IDockerService;
+    public RunnerServiceImpl(IDockerService dockerService, RabbitTemplate rabbitTemplate , CodeExcStore codeExcStore, ParseUtil parseUtil, ModelMapper modelMapper) {
+        this.dockerService = dockerService;
         this.rabbitTemplate  = rabbitTemplate ;
         this.codeExcStore = codeExcStore;
         this.parseUtil = parseUtil;
@@ -84,8 +84,8 @@ public class RunnerServiceImpl implements IRunnerService {
     public OutputResp runCode(CodeReqDto codeReqDto) {
         String userFolder = storeCode(codeReqDto);
 
-        String containerId = IDockerService.createContainer(codeReqDto.getCompiler(), userFolder);
-        IDockerService.startContainer(containerId);
+        String containerId = dockerService.createContainer(codeReqDto.getCompiler(), userFolder);
+        dockerService.startContainer(containerId);
 
         LocalDateTime startTime = LocalDateTime.now();
         log.info("start time : " + startTime);
@@ -93,8 +93,20 @@ public class RunnerServiceImpl implements IRunnerService {
         int waitTime = 1000; // 1s
         TimeUtil.sleep(waitTime);
 
+        // stopping container
+        try {
+            dockerService.stopContainer(containerId);
+        } catch (NotModifiedException notModifiedException) {
+            log.error(notModifiedException.getMessage());
+        }
+
+        System.out.println("containerId : " + containerId);
+        long runtime = dockerService.getContainerRunDuration(containerId);
+
+        System.out.printf("container run time :" + runtime);
+
         // returning output
-        OutputLogDto outputLogDto = IDockerService.getContainerLogs(containerId);
+        OutputLogDto outputLogDto = dockerService.getContainerLogs(containerId);
 
         // post code exec container & tmp dir cleaning
         postCleanUp(userFolder, containerId);
@@ -123,15 +135,8 @@ public class RunnerServiceImpl implements IRunnerService {
 
     @Override
     public void postCleanUp(String userFolder, String  containerId) {
-        // stopping container
-        try {
-            IDockerService.stopContainer(containerId);
-        } catch (NotModifiedException notModifiedException) {
-            log.error(notModifiedException.getMessage());
-        }
-
         // clearing docker container
-        IDockerService.removeContainer(containerId);
+        dockerService.removeContainer(containerId);
 
         // clear temp directory
         FileUtil.deleteFolder(getCompilerTmpFolder() + userFolder);

@@ -47,4 +47,11 @@ public interface IDockerService {
     default Map<String, String> getSupportedLanguages() {
         return containerMapInfo;
     }
+
+    /**
+     * return container run duration FinishedAt - StartedAt in nanoseconds
+     * @param containerId
+     * @return nanoseconds
+     */
+    long getContainerRunDuration(String containerId);
 }

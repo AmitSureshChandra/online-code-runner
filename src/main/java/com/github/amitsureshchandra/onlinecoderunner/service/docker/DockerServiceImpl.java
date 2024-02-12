@@ -4,6 +4,7 @@ import com.github.amitsureshchandra.onlinecoderunner.dto.cmd.OutputLogDto;
 import com.github.amitsureshchandra.onlinecoderunner.exception.ServerException;
 import com.github.dockerjava.api.DockerClient;
 import com.github.dockerjava.api.command.CreateContainerResponse;
+import com.github.dockerjava.api.command.InspectContainerResponse;
 import com.github.dockerjava.api.command.LogContainerCmd;
 import com.github.dockerjava.api.model.*;
 import com.github.dockerjava.core.command.LogContainerResultCallback;
@@ -14,6 +15,8 @@ import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.util.UUID;
+
+import static com.github.amitsureshchandra.onlinecoderunner.service.util.TimeUtil.getMillis;
 
 @Slf4j
 @Service
@@ -101,5 +104,16 @@ public class DockerServiceImpl implements IDockerService {
     @Override
     public void removeContainer(String containerId) {
         dockerClient.removeContainerCmd(containerId).exec();
+    }
+
+    @Override
+    public long getContainerRunDuration(String containerId) {
+        InspectContainerResponse res = dockerClient.inspectContainerCmd(containerId).exec();
+
+        long[] finishStats = getMillis(res.getState().getFinishedAt());
+        long[] startStats = getMillis(res.getState().getStartedAt());
+
+        // sub millis -> converting nanos
+        return (finishStats[0] - startStats[0]) * (long)1e6 + finishStats[1] - startStats[1];
     }
 }
