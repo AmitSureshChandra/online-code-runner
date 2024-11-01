@@ -12,4 +12,5 @@ public class CodeEventDto {
     private String code;
     private String compiler;
     private String input;
+    private int timeout;
 }
