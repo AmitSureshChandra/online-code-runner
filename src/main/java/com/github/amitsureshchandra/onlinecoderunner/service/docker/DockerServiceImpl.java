@@ -20,8 +20,8 @@ import java.util.UUID;
 public class DockerServiceImpl implements IDockerService {
     final DockerClient dockerClient;
 
-    @Value("${host-temp-folder}")
-    String hostTempFolder;
+    @Value("${tmp-folder}")
+    String tmpFolder;
 
     public DockerServiceImpl(DockerClient dockerClient) {
         this.dockerClient = dockerClient;
@@ -50,7 +50,7 @@ public class DockerServiceImpl implements IDockerService {
         CreateContainerResponse container =  dockerClient
                 .createContainerCmd(IDockerService.containerMap.get(compiler))
                 .withHostName(UUID.randomUUID().toString())
-                .withHostConfig(new HostConfig().withCpuCount(1L).withCpuPercent(100L).withMemory(104857600L).withBinds(new Bind( hostTempFolder + File.separator + userFolder, Volume.parse("/opt/myapp"), AccessMode.rw)))
+                .withHostConfig(new HostConfig().withCpuCount(1L).withCpuPercent(100L).withMemory(104857600L).withBinds(new Bind( tmpFolder + File.separator + userFolder, Volume.parse("/opt/myapp"), AccessMode.rw)))
                 .exec();
 
         return container.getId();

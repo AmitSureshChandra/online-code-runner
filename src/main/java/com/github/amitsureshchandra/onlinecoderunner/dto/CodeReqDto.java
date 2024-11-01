@@ -13,4 +13,5 @@ public class CodeReqDto {
     @NotNull @NotBlank String code;
     @NotNull @NotBlank String compiler;
     String input;
+    int timeout;
 }

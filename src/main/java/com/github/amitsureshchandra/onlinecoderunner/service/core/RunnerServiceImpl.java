@@ -7,6 +7,7 @@ import com.github.amitsureshchandra.onlinecoderunner.dto.event.CodeEventDto;
 import com.github.amitsureshchandra.onlinecoderunner.dto.resp.OutputResp;
 import com.github.amitsureshchandra.onlinecoderunner.enums.CodeExcStatus;
 import com.github.amitsureshchandra.onlinecoderunner.exception.ServerException;
+import com.github.amitsureshchandra.onlinecoderunner.exception.ValidationException;
 import com.github.amitsureshchandra.onlinecoderunner.service.docker.IDockerService;
 import com.github.amitsureshchandra.onlinecoderunner.service.util.FileUtil;
 import com.github.amitsureshchandra.onlinecoderunner.service.util.ParseUtil;
@@ -33,8 +34,8 @@ public class RunnerServiceImpl implements IRunnerService {
 
     final ParseUtil parseUtil;
 
-    @Value("${compiler-tmp-folder}")
-    String compilerTmpFolder;
+    @Value("${tmp-folder}")
+    String tmpFolder;
 
     final ModelMapper modelMapper;
 
@@ -46,17 +47,17 @@ public class RunnerServiceImpl implements IRunnerService {
         this.modelMapper = modelMapper;
     }
 
-    String getCompilerTmpFolder() {
-        return compilerTmpFolder + File.separator;
+    String getTmpFolder() {
+        return tmpFolder + File.separator;
     }
 
     String getFilePath(String fileName, String userFolder) {
-        return compilerTmpFolder + File.separator +  userFolder + File.separator + fileName;
+        return tmpFolder + File.separator +  userFolder + File.separator + fileName;
     }
 
     public String createTempFolder() {
         String tmpfolder =  UUID.randomUUID().toString().substring(0, 6);
-        String userFolder = getCompilerTmpFolder() + tmpfolder;
+        String userFolder = getTmpFolder() + tmpfolder;
         if(!FileUtil.createFolder(userFolder)) {
             log.error("failed to create folder");
             throw new RuntimeException("Server Error");
@@ -82,6 +83,11 @@ public class RunnerServiceImpl implements IRunnerService {
 
     @Override
     public OutputResp runCode(CodeReqDto codeReqDto) {
+
+        int waitTime = codeReqDto.getTimeout();
+
+        if(waitTime > 1000 * 10) throw new ValidationException("timeout can't be more than 10s");
+
         String userFolder = storeCode(codeReqDto);
 
         String containerId = IDockerService.createContainer(codeReqDto.getCompiler(), userFolder);
@@ -90,7 +96,7 @@ public class RunnerServiceImpl implements IRunnerService {
         LocalDateTime startTime = LocalDateTime.now();
         log.info("start time : " + startTime);
 
-        int waitTime = 1000; // 1s
+
         TimeUtil.sleep(waitTime);
 
         // returning output
@@ -134,6 +140,6 @@ public class RunnerServiceImpl implements IRunnerService {
         IDockerService.removeContainer(containerId);
 
         // clear temp directory
-        FileUtil.deleteFolder(getCompilerTmpFolder() + userFolder);
+        FileUtil.deleteFolder(getTmpFolder() + userFolder);
     }
 }
