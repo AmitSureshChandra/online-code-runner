@@ -4,14 +4,14 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.amitsureshchandra.onlinecoderunner.dto.event.CodeEventDto;
 import com.github.amitsureshchandra.onlinecoderunner.service.mq.listener.CodeEventListener;
-import com.github.amitsureshchandra.onlinecoderunner.util.BaseTestCase;
+import com.github.amitsureshchandra.onlinecoderunner.util.BaseTestCaseTestContainer;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
 @SpringBootTest
-class OnlineCompilerApplicationTests extends BaseTestCase {
+class OnlineCompilerApplicationTests extends BaseTestCaseTestContainer {
 
     @Autowired
     ObjectMapper objectMapper;

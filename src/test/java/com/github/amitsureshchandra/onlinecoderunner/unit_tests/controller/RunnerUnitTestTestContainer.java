@@ -2,7 +2,7 @@ package com.github.amitsureshchandra.onlinecoderunner.unit_tests.controller;
 
 import com.github.amitsureshchandra.onlinecoderunner.dto.CodeReqDto;
 import com.github.amitsureshchandra.onlinecoderunner.service.mq.listener.CodeEventListener;
-import com.github.amitsureshchandra.onlinecoderunner.util.BaseTestCaseController;
+import com.github.amitsureshchandra.onlinecoderunner.util.BaseTestCaseControllerTestContainer;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -13,7 +13,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-public class RunnerUnitTest extends BaseTestCaseController {
+public class RunnerUnitTestTestContainer extends BaseTestCaseControllerTestContainer {
 
     @MockBean
     CodeEventListener codeEventListener;
@@ -24,7 +24,8 @@ public class RunnerUnitTest extends BaseTestCaseController {
         CodeReqDto dto = new CodeReqDto(
                 "public class Solution {public static void main(String[] args) {System.out.println(\"Hello World\");}}",
                 "jdk",
-                ""
+                "",
+                1000
         );
 
         mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/run")
@@ -45,7 +46,8 @@ public class RunnerUnitTest extends BaseTestCaseController {
         CodeReqDto dto = new CodeReqDto(
                 "import java.util.*;\npublic class Solution {public static void main(String[] args) {System.out.println(\"Hello \" + new Scanner(System.in).next()+\"!\");}}",
                 "jdk",
-                "Amit"
+                "Amit",
+                1000
         );
 
         mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/run")

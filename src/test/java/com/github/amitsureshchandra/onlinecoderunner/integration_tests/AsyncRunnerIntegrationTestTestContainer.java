@@ -3,7 +3,7 @@ package com.github.amitsureshchandra.onlinecoderunner.integration_tests;
 import com.github.amitsureshchandra.onlinecoderunner.dto.CodeReqDto;
 import com.github.amitsureshchandra.onlinecoderunner.dto.resp.OutputResp;
 import com.github.amitsureshchandra.onlinecoderunner.enums.CodeExcStatus;
-import com.github.amitsureshchandra.onlinecoderunner.util.BaseIntegrationTest;
+import com.github.amitsureshchandra.onlinecoderunner.util.BaseIntegrationTestTestContainer;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
@@ -17,7 +17,7 @@ import java.util.Map;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-public class AsyncRunnerIntegrationTest extends BaseIntegrationTest {
+public class AsyncRunnerIntegrationTestTestContainer extends BaseIntegrationTestTestContainer {
 
     @Autowired
     RestTemplate restTemplate;
@@ -28,7 +28,8 @@ public class AsyncRunnerIntegrationTest extends BaseIntegrationTest {
         CodeReqDto dto = new CodeReqDto(
                 "public class Solution {public static void main(String[] args) {System.out.println(\"Hello World\");}}",
                 "jdk",
-                ""
+                "",
+                1000
         );
 
         HttpHeaders headers = new HttpHeaders();
@@ -43,7 +44,8 @@ public class AsyncRunnerIntegrationTest extends BaseIntegrationTest {
         String jsonPayload = objectMapper.writeValueAsString(new CodeReqDto(
                 "public class Solution {public static void main(String[] args) {System.out.println(\"Hello World\");}}",
                 "jdk",
-                ""
+                "",
+                1000
         ));
 
 

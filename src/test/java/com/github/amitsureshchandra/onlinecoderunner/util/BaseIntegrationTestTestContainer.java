@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.context.WebApplicationContext;
 
-public class BaseIntegrationTest extends BaseTestCase {
+public class BaseIntegrationTestTestContainer extends BaseTestCaseTestContainer {
     @Autowired
     protected WebApplicationContext context;
 

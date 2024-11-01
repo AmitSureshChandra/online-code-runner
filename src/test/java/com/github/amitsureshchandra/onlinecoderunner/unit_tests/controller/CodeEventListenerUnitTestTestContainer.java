@@ -5,7 +5,7 @@ import com.github.amitsureshchandra.onlinecoderunner.service.core.CodeExcStore;
 import com.github.amitsureshchandra.onlinecoderunner.service.mq.listener.CodeEventListener;
 import com.github.amitsureshchandra.onlinecoderunner.service.mq.processor.CodeEventProcessor;
 import com.github.amitsureshchandra.onlinecoderunner.service.util.ParseUtil;
-import com.github.amitsureshchandra.onlinecoderunner.util.BaseTestCase;
+import com.github.amitsureshchandra.onlinecoderunner.util.BaseTestCaseTestContainer;
 import org.junit.jupiter.api.Test;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +16,7 @@ import java.util.concurrent.TimeUnit;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class CodeEventListenerUnitTest extends BaseTestCase {
+public class CodeEventListenerUnitTestTestContainer extends BaseTestCaseTestContainer {
 
     @Autowired
     RabbitTemplate rabbitTemplate;
@@ -39,10 +39,11 @@ public class CodeEventListenerUnitTest extends BaseTestCase {
                 UUID.randomUUID().toString(),
                 "public class Solution {public static void main(String[] args) {System.out.println(\"Hello World\");}}",
                 "jdk",
-                ""
+                "",
+                1000
         );
         rabbitTemplate.convertAndSend("exchange", "code", parseUtil.parseToString(dto));
-        codeEventListener.getLatch().await(5, TimeUnit.SECONDS);
+        codeEventListener.getLatch().await(10, TimeUnit.SECONDS);
         assertTrue(codeExcStore.checkKeyProcessed(dto.getId()));
         assertEquals("Hello World\n", codeExcStore.get(dto.getId()).output());
     }

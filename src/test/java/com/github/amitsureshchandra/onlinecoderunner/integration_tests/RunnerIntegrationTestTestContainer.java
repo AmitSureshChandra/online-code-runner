@@ -4,7 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.amitsureshchandra.onlinecoderunner.dto.CodeReqDto;
 import com.github.amitsureshchandra.onlinecoderunner.dto.resp.OutputResp;
 import com.github.amitsureshchandra.onlinecoderunner.service.mq.listener.CodeEventListener;
-import com.github.amitsureshchandra.onlinecoderunner.util.BaseIntegrationTest;
+import com.github.amitsureshchandra.onlinecoderunner.util.BaseIntegrationTestTestContainer;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpEntity;
@@ -17,7 +17,7 @@ import java.util.Map;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 
-public class RunnerIntegrationTest extends BaseIntegrationTest {
+public class RunnerIntegrationTestTestContainer extends BaseIntegrationTestTestContainer {
 
     @MockBean
     CodeEventListener codeEventListener;
@@ -38,7 +38,8 @@ public class RunnerIntegrationTest extends BaseIntegrationTest {
         String jsonPayload = objectMapper.writeValueAsString(new CodeReqDto(
                 "public class Solution {public static void main(String[] args) {System.out.println(\"Hello World\");}}",
                 "jdk",
-                ""
+                "",
+                1000
         ));
 
 
@@ -55,7 +56,8 @@ public class RunnerIntegrationTest extends BaseIntegrationTest {
         jsonPayload = objectMapper.writeValueAsString(new CodeReqDto(
                 "import java.util.*;\npublic class Solution {public static void main(String[] args) {System.out.println(\"Hello \" + new Scanner(System.in).next()+\"!\");}}",
                 "jdk",
-                "Amit"
+                "Amit",
+                1000
         ));
 
         requestEntity = new HttpEntity<>(jsonPayload, headers);
@@ -71,7 +73,8 @@ public class RunnerIntegrationTest extends BaseIntegrationTest {
         jsonPayload = objectMapper.writeValueAsString(new CodeReqDto(
                 "import java.util.*;\npublic class Solution {public static void main(String[] args) {System.out.println(\"Hello \" + new Scanner(System.in).next()+\"!\")}}",
                 "jdk",
-                "Amit"
+                "Amit",
+                1000
         ));
 
         requestEntity = new HttpEntity<>(jsonPayload, headers);
