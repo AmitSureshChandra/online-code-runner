@@ -21,7 +21,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.time.LocalDateTime;
-import java.util.UUID;
+import java.util.*;
 
 @Slf4j
 @Service
@@ -34,6 +34,9 @@ public class RunnerServiceImpl implements IRunnerService {
 
     final ParseUtil parseUtil;
 
+    Set<String> stopContainerSet = new HashSet<>();
+    Queue<String[]> removeContainerQueue = new LinkedList<>();
+
     @Value("${tmp-folder}")
     String tmpFolder;
 
@@ -45,6 +48,57 @@ public class RunnerServiceImpl implements IRunnerService {
         this.codeExcStore = codeExcStore;
         this.parseUtil = parseUtil;
         this.modelMapper = modelMapper;
+
+        new Thread(() -> {
+            while (true) {
+                try {
+
+                    for(String id: new ArrayList<>(stopContainerSet)) {
+                        // stopping container
+                        try {
+                            IDockerService.stopContainer(id);
+                            stopContainerSet.remove(id);
+                            log.info(id + " container stopped");
+                        } catch (NotModifiedException notModifiedException) {
+                            log.error(notModifiedException.getMessage());
+                        }
+                    }
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }).start();
+
+        // running thread for deleting directory & container
+        new Thread(() -> {
+            while (true) {
+                try {
+                    int cnt = removeContainerQueue.size();
+                    while(cnt-- > 0 && !removeContainerQueue.isEmpty()) {
+                        String id = removeContainerQueue.peek()[0];
+                        String folder = removeContainerQueue.peek()[1];
+
+                        if(stopContainerSet.contains(id)) {
+                            // container is not yet stopped... add it to process later
+                            removeContainerQueue.add(removeContainerQueue.poll());
+                            continue;
+                        }
+
+                        // take id & remove container
+                        removeContainerQueue.poll();
+
+                        // post code exec container & tmp dir cleaning
+                        postCleanUp(folder, id);
+
+                        log.info("{} container removed", id);
+                    }
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }).start();
     }
 
     String getTmpFolder() {
@@ -96,14 +150,20 @@ public class RunnerServiceImpl implements IRunnerService {
         LocalDateTime startTime = LocalDateTime.now();
         log.info("start time : " + startTime);
 
+        log.info("wait time : " + waitTime);
 
         TimeUtil.sleep(waitTime);
+
+        log.info("Waited till " + LocalDateTime.now());
+
+        stopContainerSet.add(containerId);
 
         // returning output
         OutputLogDto outputLogDto = IDockerService.getContainerLogs(containerId);
 
-        // post code exec container & tmp dir cleaning
-        postCleanUp(userFolder, containerId);
+        log.info("log read at " + LocalDateTime.now());
+
+        removeContainerQueue.add(new String[] { containerId, userFolder });
 
         return new OutputResp(outputLogDto.getOutput(), outputLogDto.getError(), 0);
     }
@@ -129,13 +189,6 @@ public class RunnerServiceImpl implements IRunnerService {
 
     @Override
     public void postCleanUp(String userFolder, String  containerId) {
-        // stopping container
-        try {
-            IDockerService.stopContainer(containerId);
-        } catch (NotModifiedException notModifiedException) {
-            log.error(notModifiedException.getMessage());
-        }
-
         // clearing docker container
         IDockerService.removeContainer(containerId);
 

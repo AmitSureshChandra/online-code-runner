@@ -63,7 +63,8 @@ public class DockerServiceImpl implements IDockerService {
 
     @Override
     public void stopContainer(String containerId) {
-        dockerClient.stopContainerCmd(containerId).exec();
+        // it won't give 10sec of graceful time to shut down & stop container immediately
+        dockerClient.stopContainerCmd(containerId).withTimeout(0).exec();
     }
 
     @Override
@@ -101,5 +102,10 @@ public class DockerServiceImpl implements IDockerService {
     @Override
     public void removeContainer(String containerId) {
         dockerClient.removeContainerCmd(containerId).exec();
+    }
+
+    @Override
+    public boolean isContainerRunning(String id) {
+        return dockerClient.inspectContainerCmd(id).exec().getState().getRunning();
     }
 }

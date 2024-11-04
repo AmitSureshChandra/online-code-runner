@@ -44,6 +44,8 @@ public interface IDockerService {
      */
     void removeContainer(String containerId);
 
+    boolean isContainerRunning(String id);
+
     default Map<String, String> getSupportedLanguages() {
         return containerMapInfo;
     }
