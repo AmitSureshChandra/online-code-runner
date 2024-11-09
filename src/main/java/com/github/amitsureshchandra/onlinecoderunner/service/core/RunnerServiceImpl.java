@@ -27,7 +27,7 @@ import java.util.UUID;
 @Slf4j
 @Service
 public class RunnerServiceImpl implements IRunnerService {
-    final IDockerService IDockerService;
+    final IDockerService iDockerService;
 
     final RabbitTemplate rabbitTemplate ;
 
@@ -42,8 +42,8 @@ public class RunnerServiceImpl implements IRunnerService {
 
     final ModelMapper modelMapper;
 
-    public RunnerServiceImpl(IDockerService IDockerService, RabbitTemplate rabbitTemplate , CodeExcStore codeExcStore, ParseUtil parseUtil, ModelMapper modelMapper) {
-        this.IDockerService = IDockerService;
+    public RunnerServiceImpl(IDockerService iDockerService, RabbitTemplate rabbitTemplate , CodeExcStore codeExcStore, ParseUtil parseUtil, ModelMapper modelMapper) {
+        this.iDockerService = iDockerService;
         this.rabbitTemplate  = rabbitTemplate ;
         this.codeExcStore = codeExcStore;
         this.parseUtil = parseUtil;
@@ -93,8 +93,8 @@ public class RunnerServiceImpl implements IRunnerService {
 
         String userFolder = storeCode(codeReqDto);
 
-        String containerId = IDockerService.createContainer(codeReqDto.getCompiler(), userFolder);
-        IDockerService.startContainer(containerId);
+        String containerId = iDockerService.createContainer(codeReqDto.getCompiler(), userFolder);
+        iDockerService.startContainer(containerId);
 
         LocalDateTime startTime = LocalDateTime.now();
         log.info("start time : " + startTime);
@@ -105,11 +105,11 @@ public class RunnerServiceImpl implements IRunnerService {
 
         log.info("Waited till " + LocalDateTime.now());
 
-        if(IDockerService.isContainerRunning(containerId))
-            IDockerService.stopContainer(containerId);
+        if(iDockerService.isContainerRunning(containerId))
+            iDockerService.stopContainer(containerId);
 
         // returning output
-        OutputLogDto outputLogDto = IDockerService.getContainerLogs(containerId);
+        OutputLogDto outputLogDto = iDockerService.getContainerLogs(containerId);
 
         log.info("log read at " + LocalDateTime.now());
 
@@ -140,7 +140,7 @@ public class RunnerServiceImpl implements IRunnerService {
     @Override
     public void postCleanUp(String userFolder, String  containerId) {
         // clearing docker container
-        IDockerService.removeContainer(containerId);
+        iDockerService.removeContainer(containerId);
 
         // clear temp directory
         FileUtil.deleteFolder(getTmpFolder() + userFolder);
