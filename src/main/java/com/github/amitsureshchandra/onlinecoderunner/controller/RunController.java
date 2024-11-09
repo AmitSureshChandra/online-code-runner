@@ -11,11 +11,11 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v1/run")
-public class ReqController {
+public class RunController {
     final IRunnerService IRunnerService;
     final IDockerService IDockerService;
 
-    public ReqController(IRunnerService IRunnerService, IDockerService IDockerService) {
+    public RunController(IRunnerService IRunnerService, IDockerService IDockerService) {
         this.IRunnerService = IRunnerService;
         this.IDockerService = IDockerService;
     }

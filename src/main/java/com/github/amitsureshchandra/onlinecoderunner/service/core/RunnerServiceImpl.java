@@ -12,7 +12,6 @@ import com.github.amitsureshchandra.onlinecoderunner.service.docker.IDockerServi
 import com.github.amitsureshchandra.onlinecoderunner.service.util.FileUtil;
 import com.github.amitsureshchandra.onlinecoderunner.service.util.ParseUtil;
 import com.github.amitsureshchandra.onlinecoderunner.service.util.TimeUtil;
-import com.github.dockerjava.api.exception.NotModifiedException;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -21,7 +20,9 @@ import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.LinkedList;
+import java.util.Queue;
+import java.util.UUID;
 
 @Slf4j
 @Service
@@ -34,7 +35,6 @@ public class RunnerServiceImpl implements IRunnerService {
 
     final ParseUtil parseUtil;
 
-    Set<String> stopContainerSet = new HashSet<>();
     Queue<String[]> removeContainerQueue = new LinkedList<>();
 
     @Value("${tmp-folder}")
@@ -48,57 +48,6 @@ public class RunnerServiceImpl implements IRunnerService {
         this.codeExcStore = codeExcStore;
         this.parseUtil = parseUtil;
         this.modelMapper = modelMapper;
-
-        new Thread(() -> {
-            while (true) {
-                try {
-
-                    for(String id: new ArrayList<>(stopContainerSet)) {
-                        // stopping container
-                        try {
-                            IDockerService.stopContainer(id);
-                            stopContainerSet.remove(id);
-                            log.info(id + " container stopped");
-                        } catch (NotModifiedException notModifiedException) {
-                            log.error(notModifiedException.getMessage());
-                        }
-                    }
-                    Thread.sleep(100);
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-        }).start();
-
-        // running thread for deleting directory & container
-        new Thread(() -> {
-            while (true) {
-                try {
-                    int cnt = removeContainerQueue.size();
-                    while(cnt-- > 0 && !removeContainerQueue.isEmpty()) {
-                        String id = removeContainerQueue.peek()[0];
-                        String folder = removeContainerQueue.peek()[1];
-
-                        if(stopContainerSet.contains(id)) {
-                            // container is not yet stopped... add it to process later
-                            removeContainerQueue.add(removeContainerQueue.poll());
-                            continue;
-                        }
-
-                        // take id & remove container
-                        removeContainerQueue.poll();
-
-                        // post code exec container & tmp dir cleaning
-                        postCleanUp(folder, id);
-
-                        log.info("{} container removed", id);
-                    }
-                    Thread.sleep(100);
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-        }).start();
     }
 
     String getTmpFolder() {
@@ -156,15 +105,15 @@ public class RunnerServiceImpl implements IRunnerService {
 
         log.info("Waited till " + LocalDateTime.now());
 
-        stopContainerSet.add(containerId);
+        IDockerService.stopContainer(containerId);
 
         // returning output
         OutputLogDto outputLogDto = IDockerService.getContainerLogs(containerId);
 
         log.info("log read at " + LocalDateTime.now());
 
-        removeContainerQueue.add(new String[] { containerId, userFolder });
-
+        postCleanUp(tmpFolder, containerId);
+        log.info(containerId + " is removed");
         return new OutputResp(outputLogDto.getOutput(), outputLogDto.getError(), 0);
     }
 

@@ -18,6 +18,7 @@ public interface IRunnerService {
         fileNameMap.put("python3", "app.js");
         fileNameMap.put("node20", "main.go");
         fileNameMap.put("gcc11", "solution.py");
+        fileNameMap.put("input", "input.txt");
     }
 
     /**
