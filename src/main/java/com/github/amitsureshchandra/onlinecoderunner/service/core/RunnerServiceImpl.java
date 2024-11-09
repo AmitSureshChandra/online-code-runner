@@ -105,7 +105,8 @@ public class RunnerServiceImpl implements IRunnerService {
 
         log.info("Waited till " + LocalDateTime.now());
 
-        IDockerService.stopContainer(containerId);
+        if(IDockerService.isContainerRunning(containerId))
+            IDockerService.stopContainer(containerId);
 
         // returning output
         OutputLogDto outputLogDto = IDockerService.getContainerLogs(containerId);
