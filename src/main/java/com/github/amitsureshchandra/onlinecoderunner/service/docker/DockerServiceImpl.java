@@ -29,19 +29,19 @@ public class DockerServiceImpl implements IDockerService {
 
     @PostConstruct
     void init() {
-        containerMap.put("jdk", "online-compiler-jdk");
+        containerMap.put("jdk", "ak00029/online-compiler-jdk");
         containerMapInfo.put("jdk", "Java");
 
-        containerMap.put("golang12", "online-compiler-golang12");
+        containerMap.put("golang12", "ak00029/online-compiler-golang12");
         containerMapInfo.put("golang12", "Golang");
 
-        containerMap.put("python3", "online-compiler-python3");
+        containerMap.put("python3", "ak00029/online-compiler-python3");
         containerMapInfo.put("python3", "Python 3");
 
-        containerMap.put("node20", "online-compiler-node20");
+        containerMap.put("node20", "ak00029/online-compiler-node20");
         containerMapInfo.put("node20", "Node 20");
 
-        containerMap.put("gcc11", "online-compiler-gcc11");
+        containerMap.put("gcc11", "ak00029/online-compiler-gcc11");
         containerMapInfo.put("gcc11", "C/C++(gcc11)");
     }
 
